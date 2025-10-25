@@ -1,17 +1,23 @@
 package es.deusto.sd.authenticus_serv_central.entity;
 
 public class ArchImagen {
+    private long id;
     private String nombre;
     private String extension;
     private String path;
     
     
-    ArchImagen(String nombre, String extension, String path) {
+    public ArchImagen(long id, String nombre, String extension, String path) {
+        this.id = id;
         this.nombre = nombre;
         this.extension = extension;
         this.path = path;
     }
 
+
+    public long getId() {
+        return id;
+    }
 
     public String getNombre() {
         return nombre;
@@ -25,6 +31,8 @@ public class ArchImagen {
         return path;
     }
 
+
+    // no setId()
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
