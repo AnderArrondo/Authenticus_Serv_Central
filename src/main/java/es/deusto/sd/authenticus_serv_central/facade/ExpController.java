@@ -7,7 +7,10 @@ import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.service.ExpServ;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import java.text.ParseException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +33,20 @@ public class ExpController {
         summary="Crear un nuevo expediente",
         description="Crea un nuevo expediente en el sistema con los datos proporcionados"
     )
+    @ApiResponse(responseCode = "201", description = "Expediente creado correctamente")
+    @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente")
     @PostMapping("/crea")
-    public ResponseEntity<ExpedDTO> crearExpediente(
+    public ResponseEntity<?> crearExpediente(
         @Parameter(description = "Objeto Expediente a crear", required = true)
         @RequestBody ExpedDTO expedDTO) {
-        ExpedDTO newExped = expedServ.crearExpediente(expedDTO);
-
-        return new ResponseEntity<ExpedDTO>(newExped, HttpStatus.CREATED);
+        try {
+            ExpedDTO newExped = expedServ.crearExpediente(expedDTO);
+            return new ResponseEntity<ExpedDTO>(newExped, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (ParseException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }
     

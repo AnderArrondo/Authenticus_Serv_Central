@@ -1,5 +1,9 @@
 package es.deusto.sd.authenticus_serv_central.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +20,8 @@ import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 
 @Service
 public class ExpServ {
+    SimpleDateFormat dtFormatter = new SimpleDateFormat("dd/MM/yyyy");
+
     private final Map<Long, ArchImagen> imagenes = new HashMap<>();
     private final AtomicLong idGenImg = new AtomicLong(0);
     private final Map<Long, Exped> expedientes = new HashMap<>();
@@ -56,28 +62,49 @@ public class ExpServ {
         expedientes.put(exped.getId(), exped);
     }
 
-    public ExpedDTO crearExpediente(ExpedDTO exped) {
+    public ExpedDTO crearExpediente(ExpedDTO exped) throws IllegalArgumentException, ParseException {
         long newId = idGenExp.incrementAndGet();
+        TipoExp tipoExp;
+        Date fecha = dtFormatter.parse(exped.getFecha());
+        switch (exped.getTipo().toString().toUpperCase()) {
+            case "VERACIDAD":
+                tipoExp = TipoExp.VERACIDAD;
+                break;
+            case "INTEGRIDAD":
+                tipoExp = TipoExp.INTEGRIDAD;
+                break;
+            case "AMBAS":   
+                tipoExp = TipoExp.AMBAS;
+                break;
+        
+            default:
+                throw new IllegalArgumentException("Tipo de expediente no válido");
+        }
+
+        List<ArchImagen> imagenes = new ArrayList<>();
+        for (String img : exped.getImagenes().split(",")) {
+            imagenes.add(new ArchImagen(idGenImg.incrementAndGet(), img.trim()));
+        }
+
         Exped newExped = new Exped(newId,
             exped.getNombre(),
-            exped.getTipo(),
-            exped.getFecha(),
-            exped.getImagenes()
+            tipoExp,
+            fecha,
+            imagenes
         );
         expedientes.put(newId, newExped);
 
-        System.out.println(expedientes.size());
+        System.out.println(expedientes.toString());
 
         return toDTO(newExped);
     }
 
     private ExpedDTO toDTO(Exped exped) {
         return new ExpedDTO(
-            exped.getId(),
             exped.getNombre(),
-            exped.getTipo(),
-            exped.getFecha(),
-            exped.getImagenes()
+            exped.getTipo().toString(),
+            exped.getFecha().toString(),
+            exped.getImagenes().toString()
         );
     }
 }
