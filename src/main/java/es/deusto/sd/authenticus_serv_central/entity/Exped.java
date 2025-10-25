@@ -1,5 +1,6 @@
 package es.deusto.sd.authenticus_serv_central.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

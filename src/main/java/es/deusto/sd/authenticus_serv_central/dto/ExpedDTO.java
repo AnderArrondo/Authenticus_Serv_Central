@@ -1,22 +1,19 @@
 package es.deusto.sd.authenticus_serv_central.dto;
 
-import java.util.Date;
 import java.util.List;
 
 import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
-import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 
 public class ExpedDTO {
-    private long id;
     private String nombre;
-    private TipoExp tipo;
-    private Date fecha;
-    private List<ArchImagen> imagenes;
+    private String tipo;
+    private String fecha;
+    private String imagenes;
+
 
     public ExpedDTO() {}
 
-    public ExpedDTO(long id, String nombre, TipoExp tipo, Date fecha, List<ArchImagen> imagenes) {
-        this.id = id;
+    public ExpedDTO(String nombre, String tipo, String fecha, String imagenes) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.fecha = fecha;
@@ -24,41 +21,36 @@ public class ExpedDTO {
     }
 
 
-    public long getId() {
-        return id;
-    }
-
     public String getNombre() {
         return nombre;
     }
 
-    public TipoExp getTipo() {
+    public String getTipo() {
         return tipo;
     }
 
-    public Date getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public List<ArchImagen> getImagenes() {
+    public String getImagenes() {
         return imagenes;
     }
 
-    // no setId()
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
-    public void setTipo(TipoExp tipo) {
+    public void setTipo(String tipo) {
         this.tipo = tipo;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
-    public void setImagenes(List<ArchImagen> imagenes) {
+    public void setImagenes(String imagenes) {
         this.imagenes = imagenes;
     }
 }

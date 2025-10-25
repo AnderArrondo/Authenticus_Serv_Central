@@ -5,8 +5,7 @@ public class ArchImagen {
     private String nombre;
     private String extension;
     private String path;
-    
-    
+
     public ArchImagen(long id, String nombre, String extension, String path) {
         this.id = id;
         this.nombre = nombre;
@@ -14,6 +13,15 @@ public class ArchImagen {
         this.path = path;
     }
 
+    public ArchImagen(long id, String absPath) {
+        this.id = id;
+        String[] parts = absPath.replace("\\", "/").split("/");
+        String fileName = parts[parts.length - 1];
+        this.path = absPath.replace("/" + fileName, "/");
+        String[] nameParts = fileName.split("\\.");
+        this.nombre = nameParts[0];
+        this.extension = nameParts.length > 1 ? nameParts[1] : "";
+    }
 
     public long getId() {
         return id;
