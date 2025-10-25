@@ -19,6 +19,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.21'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web-services'
 	runtimeOnly 'com.h2database:h2'
