@@ -1,5 +1,5 @@
 package es.deusto.sd.authenticus_serv_central.service;
 
-public class expdServ {
+public class ExpServ {
     
 }
