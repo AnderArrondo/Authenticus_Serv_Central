@@ -110,7 +110,7 @@ public class ExpServ {
         );
     }
 
-    private List<Exped> consultaExped(Optional<Integer> numCasos, Optional<String> dateIni, Optional<String> dateFin){
+    public List<Exped> consultaExped(Optional<Integer> numCasos, Optional<String> dateIni, Optional<String> dateFin) throws IllegalArgumentException{
         List<Exped> expedientesCons = new ArrayList<>();
 
         if(numCasos.isPresent()){
