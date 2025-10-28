@@ -5,10 +5,12 @@ import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
@@ -106,5 +108,56 @@ public class ExpServ {
             exped.getFecha().toString(),
             exped.getImagenes().toString()
         );
+    }
+
+    private List<Exped> consultaExped(Optional<Integer> numCasos, Optional<String> dateIni, Optional<String> dateFin){
+        List<Exped> expedientesCons = new ArrayList<>();
+
+        if(numCasos.isPresent()){
+            
+            Integer nCasos = numCasos.get();
+            List<Exped> lTemp = expedientes.values().stream().sorted(Comparator.comparing(Exped::getFecha).reversed()).limit(nCasos).toList();
+            for(Exped e: lTemp){
+
+                expedientesCons.add(e);
+            }
+        }
+        else if(dateIni.isPresent() && dateFin.isPresent()){
+
+            Optional<Date> fechaIni = dateIni.map(fechaStr -> {
+                try {
+                    return new SimpleDateFormat("yyyy-MM-dd").parse(fechaStr);
+                } catch (ParseException e) {
+                    throw new RuntimeException("Formato inválido: " + fechaStr, e);
+                }
+            }); 
+            Optional<Date> fechaFin = dateFin.map(fechaStr -> {
+                try {
+                    return new SimpleDateFormat("yyyy-MM-dd").parse(fechaStr);
+                } catch (ParseException e) {
+                    throw new RuntimeException("Formato inválido: " + fechaStr, e);
+                }
+            });
+            Date fechaInicio = fechaIni.get();
+            Date fechaFinal = fechaFin.get();
+
+            for(Exped expediente: expedientes.values()){
+
+                if(expediente.getFecha().equals(fechaInicio) || expediente.getFecha().after(fechaInicio)
+                    && expediente.getFecha().equals(fechaFinal) || expediente.getFecha().before(fechaFinal)){
+
+                        expedientesCons.add(expediente);
+                }
+            }
+        }
+        else{
+
+            List<Exped> lTemp = expedientes.values().stream().sorted(Comparator.comparing(Exped::getFecha).reversed()).limit(5).toList();
+            for(Exped e: lTemp){
+
+                expedientesCons.add(e);
+            }
+        }
+        return expedientesCons;
     }
 }
