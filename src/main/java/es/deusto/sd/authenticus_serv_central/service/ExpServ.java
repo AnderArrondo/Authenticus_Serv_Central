@@ -110,30 +110,31 @@ public class ExpServ {
         );
     }
 
-    public List<Exped> consultaExped(Optional<Integer> numCasos, Optional<String> dateIni, Optional<String> dateFin) throws IllegalArgumentException{
-        List<Exped> expedientesCons = new ArrayList<>();
+    public List<ExpedDTO> consultaExped(Optional<Integer> numCasos, Optional<String> dateIni, Optional<String> dateFin) throws IllegalArgumentException{
+        List<ExpedDTO> expedientesCons;
 
         if(numCasos.isPresent()){
             
             Integer nCasos = numCasos.get();
-            List<Exped> lTemp = expedientes.values().stream().sorted(Comparator.comparing(Exped::getFecha).reversed()).limit(nCasos).toList();
-            for(Exped e: lTemp){
-
-                expedientesCons.add(e);
-            }
+            expedientesCons = expedientes.values().stream()
+            .sorted(Comparator.comparing(Exped::getFecha).reversed())
+            .limit(nCasos)
+            .map(this::toDTO)  
+            .toList();
+            
         }
         else if(dateIni.isPresent() && dateFin.isPresent()){
-
+            expedientesCons = new ArrayList<>();
             Optional<Date> fechaIni = dateIni.map(fechaStr -> {
                 try {
-                    return new SimpleDateFormat("yyyy-MM-dd").parse(fechaStr);
+                    return dtFormatter.parse(fechaStr);
                 } catch (ParseException e) {
                     throw new RuntimeException("Formato inválido: " + fechaStr, e);
                 }
             }); 
             Optional<Date> fechaFin = dateFin.map(fechaStr -> {
                 try {
-                    return new SimpleDateFormat("yyyy-MM-dd").parse(fechaStr);
+                    return dtFormatter.parse(fechaStr);
                 } catch (ParseException e) {
                     throw new RuntimeException("Formato inválido: " + fechaStr, e);
                 }
@@ -143,20 +144,26 @@ public class ExpServ {
 
             for(Exped expediente: expedientes.values()){
 
-                if(expediente.getFecha().equals(fechaInicio) || expediente.getFecha().after(fechaInicio)
-                    && expediente.getFecha().equals(fechaFinal) || expediente.getFecha().before(fechaFinal)){
+                if((expediente.getFecha().equals(fechaInicio) || expediente.getFecha().after(fechaInicio))
+                    && (expediente.getFecha().equals(fechaFinal) || expediente.getFecha().before(fechaFinal))){
 
-                        expedientesCons.add(expediente);
+                        expedientesCons.add(toDTO(expediente));
                 }
             }
         }
+
+        else if(dateIni.isPresent() || dateFin.isPresent()){
+
+            throw new IllegalArgumentException("Fecha de inicio o Fecha de fin no introducidos");
+        }
         else{
 
-            List<Exped> lTemp = expedientes.values().stream().sorted(Comparator.comparing(Exped::getFecha).reversed()).limit(5).toList();
-            for(Exped e: lTemp){
-
-                expedientesCons.add(e);
-            }
+            Integer nCasos = 5;
+            expedientesCons = expedientes.values().stream()
+            .sorted(Comparator.comparing(Exped::getFecha).reversed())
+            .limit(nCasos)
+            .map(this::toDTO)  
+            .toList();
         }
         return expedientesCons;
     }

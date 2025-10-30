@@ -68,7 +68,7 @@ public class ExpController {
         @RequestParam(required = false) Optional<String> fechaFin) {
 
         try{
-            List<Exped> listaExp = expedServ.consultaExped(numCasos, fechaIni, fechaFin);
+            List<ExpedDTO> listaExp = expedServ.consultaExped(numCasos, fechaIni, fechaFin);
             return new ResponseEntity<>(listaExp, HttpStatus.FOUND);
         }
 
