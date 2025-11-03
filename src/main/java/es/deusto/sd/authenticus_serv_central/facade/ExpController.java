@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -59,18 +60,19 @@ public class ExpController {
     )
     @ApiResponse(responseCode = "201", description = "Expediente encontrado correctamente")
     @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente")
-    @GetMapping("/consultar")
+    @GetMapping("/consultar/{token}")
     public ResponseEntity<?> consultarExpediente(
         @RequestParam(required = false) Optional<Integer> numCasos,
         @RequestParam(required = false) Optional<String> fechaIni,
-        @RequestParam(required = false) Optional<String> fechaFin) {
+        @RequestParam(required = false) Optional<String> fechaFin,
+        @PathVariable String token) {
 
         try{
-            List<ExpedDTO> listaExp = expedServ.consultaExped(numCasos, fechaIni, fechaFin);
+            List<ExpedDTO> listaExp = expedServ.consultaExped(numCasos, fechaIni, fechaFin, token);
             return new ResponseEntity<>(listaExp, HttpStatus.FOUND);
         }
 
-        catch (IllegalArgumentException e) {
+        catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }   
         
