@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,5 +52,29 @@ public class UserCon {
             return ResponseEntity.internalServerError().body("Error durante el login: " + e.getMessage()); 
         } 
     }   
-    
+
+    /**
+     * @param token 
+     * @return 
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
+        
+        String extractedToken = token;
+        if (token.startsWith("Bearer ")) {
+            extractedToken = token.substring(7);
+        }
+        
+        try {
+            userServ.logout(extractedToken);
+            // 200 OK con un mensaje simple
+            return ResponseEntity.ok().body("Logout exitoso.");
+        } catch (IllegalArgumentException e) {
+            // 401 Unauthorized si el token es inválido
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error durante el logout: " + e.getMessage());
+        }
+    }
 }
+

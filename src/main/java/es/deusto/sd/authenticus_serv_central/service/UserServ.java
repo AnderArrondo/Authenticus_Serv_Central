@@ -66,5 +66,26 @@ public class UserServ {
             System.out.println(" - Token generado: " + token); 
             System.out.println(" - Tokens activos ahora: " + activeTokens.size());
             return new LoginResponseDTO(token); } 
-    }  
+
+
+    /**
+     * @param token 
+     * @throws IllegalArgumentException 
+     */
+    public void logout(String token) {
+        if (activeTokens.containsKey(token)) {
+            
+            User user = activeTokens.remove(token);
+
+            System.out.println("SIMULACIÓN: Logout exitoso.");
+            System.out.println(" - Usuario deslogeado: " + user.getEmail());
+            System.out.println(" - Token invalidado: " + token);
+            System.out.println(" - Tokens activos ahora: " + activeTokens.size());
+        } else {
+            throw new IllegalArgumentException("Token no válido o sesión ya cerrada.");
+        }
+    }
+}
+     
+
 
