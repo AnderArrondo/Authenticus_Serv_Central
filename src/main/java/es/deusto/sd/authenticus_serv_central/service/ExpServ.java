@@ -4,10 +4,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
@@ -105,5 +107,63 @@ public class ExpServ {
             exped.getFecha().toString(),
             exped.getImagenes().toString()
         );
+    }
+
+    public List<ExpedDTO> consultaExped(Optional<Integer> numCasos, Optional<String> dateIni, Optional<String> dateFin) throws IllegalArgumentException{
+        List<ExpedDTO> expedientesCons;
+
+        if(numCasos.isPresent()){
+            
+            Integer nCasos = numCasos.get();
+            expedientesCons = expedientes.values().stream()
+            .sorted(Comparator.comparing(Exped::getFecha).reversed())
+            .limit(nCasos)
+            .map(this::toDTO)  
+            .toList();
+            
+        }
+        else if(dateIni.isPresent() && dateFin.isPresent()){
+            expedientesCons = new ArrayList<>();
+            Optional<Date> fechaIni = dateIni.map(fechaStr -> {
+                try {
+                    return dtFormatter.parse(fechaStr);
+                } catch (ParseException e) {
+                    throw new RuntimeException("Formato inválido: " + fechaStr, e);
+                }
+            }); 
+            Optional<Date> fechaFin = dateFin.map(fechaStr -> {
+                try {
+                    return dtFormatter.parse(fechaStr);
+                } catch (ParseException e) {
+                    throw new RuntimeException("Formato inválido: " + fechaStr, e);
+                }
+            });
+            Date fechaInicio = fechaIni.get();
+            Date fechaFinal = fechaFin.get();
+
+            for(Exped expediente: expedientes.values()){
+
+                if((expediente.getFecha().equals(fechaInicio) || expediente.getFecha().after(fechaInicio))
+                    && (expediente.getFecha().equals(fechaFinal) || expediente.getFecha().before(fechaFinal))){
+
+                        expedientesCons.add(toDTO(expediente));
+                }
+            }
+        }
+
+        else if(dateIni.isPresent() || dateFin.isPresent()){
+
+            throw new IllegalArgumentException("Fecha de inicio o Fecha de fin no introducidos");
+        }
+        else{
+
+            Integer nCasos = 5;
+            expedientesCons = expedientes.values().stream()
+            .sorted(Comparator.comparing(Exped::getFecha).reversed())
+            .limit(nCasos)
+            .map(this::toDTO)  
+            .toList();
+        }
+        return expedientesCons;
     }
 }
