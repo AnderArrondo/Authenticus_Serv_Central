@@ -28,4 +28,18 @@ public class UserServ {
         
         return userDTO;
     }
+
+    public UserDTO loginUsuario(UserDTO userDTO) {
+        //Haz logica de login aqui
+        
+
+
+
+
+
+
+
+        return userDTO;
+    }
+
 }
