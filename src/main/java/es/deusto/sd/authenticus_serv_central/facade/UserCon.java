@@ -14,6 +14,7 @@ import es.deusto.sd.authenticus_serv_central.service.UserServ;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/api/auth") // URL base para la autenticación
@@ -78,11 +79,11 @@ public class UserCon {
         }
     }
 
-    /** * Endpoint para el Remove (Eliminar usuario). * 
+    /** 
      * @param token El token de autorización (enviado como "Authorization: Bearer <token>"). * 
      * @return Un ResponseEntity con un mensaje de éxito o un error. */ 
-    @DeleteMapping("/remove") // Usamos DELETE para eliminar un recurso 
-    public ResponseEntity<?> remove(@RequestHeader("Authorization") String token) { 
+    @DeleteMapping("/remove/{token}") // Usamos DELETE para eliminar un recurso 
+    public ResponseEntity<?> remove(@PathVariable String token) { 
         String extractedToken = token; 
         if (token.startsWith("Bearer ")) { 
             extractedToken = token.substring(7); 
