@@ -85,6 +85,25 @@ public class UserServ {
             throw new IllegalArgumentException("Token no válido o sesión ya cerrada.");
         }
     }
+
+    /** 
+     * @param token El token de sesión del usuario a eliminar. * 
+     * @throws IllegalArgumentException si el token no es válido. */ 
+    public void removeUser(String token) { 
+        if (!activeTokens.containsKey(token)) { 
+            throw new IllegalArgumentException("Token no válido o sesión ya cerrada."); 
+        } User user = activeTokens.get(token); 
+        String userEmail = user.getEmail();
+        if (simulatedUserDatabase.containsKey(userEmail)) { 
+            simulatedUserDatabase.remove(userEmail); 
+        } else {
+            System.out.println("ADVERTENCIA: Usuario '" + userEmail + "' no encontrado en la BBDD simulada, pero sí tenía un token activo."); 
+        }  
+        activeTokens.remove(token); 
+        System.out.println("SIMULACIÓN: Usuario eliminado exitosamente."); 
+        System.out.println(" - Usuario: " + userEmail); 
+        System.out.println(" - Tokens activos ahora: " + activeTokens.size()); 
+        System.out.println(" - Usuarios 'en BBDD' ahora: " + simulatedUserDatabase.size()); }  
 }
      
 
