@@ -54,17 +54,17 @@ public class UserServ {
 
     
 
-    public UserDTO loginUsuario(UserDTO userDTO) {
-        //Haz logica de login aqui
-        
+    public LoginResponseDTO login(LoginRequestDTO loginDTO) { 
+        User user = simulatedUserDatabase.get(loginDTO.getEmail());
+        if (user == null || !user.getContrasena().equals(loginDTO.getContrasena())) {
+            throw new IllegalArgumentException("Email o contraseña incorrectos."); 
+        }
+            String token = UUID.randomUUID().toString();
+            activeTokens.put(token, user); 
+            System.out.println("SIMULACIÓN: Login exitoso.");
+            System.out.println(" - Usuario: " + user.getEmail()); 
+            System.out.println(" - Token generado: " + token); 
+            System.out.println(" - Tokens activos ahora: " + activeTokens.size());
+            return new LoginResponseDTO(token); } 
+    }  
 
-
-
-
-
-
-
-        return userDTO;
-    }
-
-}

@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.deusto.sd.authenticus_serv_central.dto.LoginRequestDTO;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 import es.deusto.sd.authenticus_serv_central.service.UserServ;
+import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/api/auth") // URL base para la autenticación
@@ -32,5 +35,21 @@ public class UserCon {
             return ResponseEntity.internalServerError().body("Error al crear el usuario: " + e.getMessage());
         }
     }
+
+
+    /** * Endpoint para el Login (Inicio de sesión). *
+     * @param loginDTO Datos de login (email, contrasena) en formato JSON. * 
+     * @return Un ResponseEntity con el LoginResponseDTO (token) o un error. 
+     * */ @PostMapping("/login") 
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginDTO) { 
+        try { 
+            LoginResponseDTO response = userServ.login(loginDTO); // 200 OK con el token en el cuerpo 
+            return ResponseEntity.ok(response); 
+        } catch (IllegalArgumentException e) { // 401 Unauthorized para credenciales incorrectas 
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage()); 
+        } catch (Exception e) { 
+            return ResponseEntity.internalServerError().body("Error durante el login: " + e.getMessage()); 
+        } 
+    }   
     
 }
