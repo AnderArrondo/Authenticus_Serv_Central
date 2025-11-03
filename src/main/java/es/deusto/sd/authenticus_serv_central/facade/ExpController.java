@@ -17,12 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/exped")
 @Tag(name="Expedientes de casos", description="Funcionalidades relativas a los expedientes de casos")
 public class ExpController {
-
     private final ExpServ expedServ;
 
     public ExpController(ExpServ expedServ) {
