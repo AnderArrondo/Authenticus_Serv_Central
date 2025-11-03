@@ -12,7 +12,7 @@ public class UserServ {
      * @throws IllegalArgumentException 
      */
     public UserDTO crearUsuario(UserDTO userDTO) {
-        
+
         if (userDTO.getContrasena() == null || userDTO.getContrasena().length() < 8) {
             throw new IllegalArgumentException("La contraseña no es válida (debe tener al menos 8 caracteres).");
         }
