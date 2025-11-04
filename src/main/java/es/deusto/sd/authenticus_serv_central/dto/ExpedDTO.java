@@ -1,16 +1,17 @@
 package es.deusto.sd.authenticus_serv_central.dto;
 
+import java.util.List;
 
 public class ExpedDTO {
     private String nombre;
     private String tipo;
     private String fecha;
-    private String imagenes;
+    private List<String> imagenes;
 
 
     public ExpedDTO() {}
 
-    public ExpedDTO(String nombre, String tipo, String fecha, String imagenes) {
+    public ExpedDTO(String nombre, String tipo, String fecha, List<String> imagenes) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.fecha = fecha;
@@ -30,7 +31,7 @@ public class ExpedDTO {
         return fecha;
     }
 
-    public String getImagenes() {
+    public List<String> getImagenes() {
         return imagenes;
     }
 
@@ -47,7 +48,7 @@ public class ExpedDTO {
         this.fecha = fecha;
     }
 
-    public void setImagenes(String imagenes) {
+    public void setImagenes(List<String> imagenes) {
         this.imagenes = imagenes;
     }
 }
