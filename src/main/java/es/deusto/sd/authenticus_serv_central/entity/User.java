@@ -6,9 +6,9 @@ public class User {
     private String email;
     private String contrasena;
     private String nombre;
-    private int telefono;
+    private String telefono;
 
-    public User(String email, String contrasena, String nombre, int telefono) {
+    public User(String email, String contrasena, String nombre, String telefono) {
         this.email = email;
         this.contrasena = contrasena;
         this.nombre = nombre;
@@ -29,7 +29,7 @@ public class User {
         return nombre;
     }
 
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
@@ -43,7 +43,7 @@ public class User {
         this.nombre = nombre;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
