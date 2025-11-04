@@ -21,6 +21,7 @@ import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 import es.deusto.sd.authenticus_serv_central.entity.User;
+import net.bytebuddy.asm.Advice.OffsetMapping.Factory.Illegal;
 
 @Service
 public class ExpServ {
@@ -58,50 +59,61 @@ public class ExpServ {
         // expedientes.put(exped.getId(), exped);
     }
 
-    public ExpedDTO crearExpediente(ExpedDTO exped, String token) throws IllegalArgumentException, ParseException {
+    public ExpedDTO crearExpediente(ExpedDTO expedDTO, String token) throws IllegalArgumentException, ParseException {
         if(!StateManagement.isActiveToken(token)){
             throw new IllegalArgumentException("Token inválido o sesión no iniciada.");
         }
         User usuario = StateManagement.tokenUsuario.get(token);
         
-        Date fecha = dtFormatter.parse(exped.getFecha());
-        TipoExp tipoExp;
-        switch (exped.getTipo().toString().toUpperCase()) {
-            case "VERACIDAD":
-                tipoExp = TipoExp.VERACIDAD;
-                break;
-            case "INTEGRIDAD":
-                tipoExp = TipoExp.INTEGRIDAD;
-                break;
-            case "AMBAS":   
-                tipoExp = TipoExp.AMBAS;
-                break;
-        
-            default:
-                throw new IllegalArgumentException("Tipo de expediente no válido.");
-        }
+        Date fecha = dtFormatter.parse(expedDTO.getFecha());
+        TipoExp tipoExp = parseTipoExp(expedDTO.getTipo());
 
-        List<ArchImagen> imagenes = new ArrayList<>();
-        for(String img : exped.getImagenes()){
-            ArchImagen newImg = new ArchImagen(img);
-            imagenes.add(newImg);
-        }
+        List<ArchImagen> imagenes = toArchImagenList(expedDTO.getImagenes());
 
-        Exped newExped = new Exped(
-            exped.getNombre(),
+        Exped exped = new Exped(
+            expedDTO.getNombre(),
             tipoExp,
             fecha,
             imagenes
         );
 
-        for(Exped existExped : StateManagement.usuarioExpediente.get(usuario)){
-            if(existExped.equals(newExped)){
-                    throw new IllegalArgumentException("El expediente ya existe.");
+        if(existeExpediente(exped, usuario)) {
+            throw new IllegalArgumentException("El expediente ya existe.");
+        }
+        StateManagement.usuarioExpediente.get(usuario).add(exped);
+
+        return toDTO(exped);
+    }
+
+    private boolean existeExpediente(Exped newExped, User usuario){
+        for(Exped exped : StateManagement.usuarioExpediente.get(usuario)){
+            if(exped.equals(newExped)){
+                return true;
             }
         }
-        StateManagement.usuarioExpediente.get(usuario).add(newExped);
+        return false;
+    }
 
-        return toDTO(newExped);
+    private List<ArchImagen> toArchImagenList(List<String> imagenesStr){
+        List<ArchImagen> imagenes = new ArrayList<>();
+        for(String img : imagenesStr){
+            ArchImagen newImg = new ArchImagen(img);
+            imagenes.add(newImg);
+        }
+        return imagenes;
+    }
+
+    private TipoExp parseTipoExp(String tipo) throws IllegalArgumentException {
+        switch (tipo.toUpperCase()) {
+            case "VERACIDAD":
+                return TipoExp.VERACIDAD;
+            case "INTEGRIDAD":
+                return TipoExp.INTEGRIDAD;
+            case "AMBAS":
+                return TipoExp.AMBAS;
+            default:
+                throw new IllegalArgumentException("Tipo de expediente no válido.");
+        }
     }
 
     private ExpedDTO toDTO(Exped exped) {
