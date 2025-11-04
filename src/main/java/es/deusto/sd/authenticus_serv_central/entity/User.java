@@ -1,5 +1,7 @@
 package es.deusto.sd.authenticus_serv_central.entity;
 
+import java.util.Objects;
+
 public class User {
     private String email;
     private String contrasena;
@@ -63,14 +65,14 @@ public class User {
         User other = (User) obj;
         if (email == null && other.email != null) {
             return false;
-        } else if (!email.equals(other.email))
+        } else if (!email.equals(other.email)) // email como atributo unico
             return false;
         return true;
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hash(this.email);
     }
 }
 

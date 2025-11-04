@@ -1,5 +1,6 @@
 package es.deusto.sd.authenticus_serv_central.service;
 
+import java.beans.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,13 +20,13 @@ import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
+import es.deusto.sd.authenticus_serv_central.entity.User;
 
 @Service
 public class ExpServ {
     SimpleDateFormat dtFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
     private final Map<Long, Exped> expedientes = new HashMap<>();
-    private final AtomicLong idGenExp = new AtomicLong(0);
 
     public ExpServ() {
         ArchImagen img1, img2;
@@ -38,33 +39,33 @@ public class ExpServ {
 
         calendar.set(2024, Calendar.JANUARY, 15);
         date = calendar.getTime();
-        Exped exped = new Exped(idGenExp.incrementAndGet(),
+        Exped exped = new Exped(
             "Caso Styles", TipoExp.AMBAS, date, List.of(img1, img2));
-        expedientes.put(exped.getId(), exped);
+        // expedientes.put(exped.getId(), exped);
 
         calendar.set(2020, Calendar.JUNE, 30);
         date = calendar.getTime();
-        exped = new Exped(idGenExp.incrementAndGet(),
+        exped = new Exped(
             "Caso Benedicto", TipoExp.VERACIDAD, date, List.of(img1)
         );
-        expedientes.put(exped.getId(), exped);
+        // expedientes.put(exped.getId(), exped);
 
         calendar.set(2017, Calendar.DECEMBER, 2);
         date = calendar.getTime();
-        exped = new Exped(idGenExp.incrementAndGet(),
+        exped = new Exped(
             "Caso Pamela", TipoExp.INTEGRIDAD, date, List.of(img2)
         );
-        expedientes.put(exped.getId(), exped);
+        // expedientes.put(exped.getId(), exped);
     }
 
     public ExpedDTO crearExpediente(ExpedDTO exped, String token) throws IllegalArgumentException, ParseException {
         if(!StateManagement.isActiveToken(token)){
             throw new IllegalArgumentException("Token inválido o sesión no iniciada.");
         }
+        User usuario = StateManagement.tokenUsuario.get(token);
         
-        long newId = idGenExp.incrementAndGet();
-        TipoExp tipoExp;
         Date fecha = dtFormatter.parse(exped.getFecha());
+        TipoExp tipoExp;
         switch (exped.getTipo().toString().toUpperCase()) {
             case "VERACIDAD":
                 tipoExp = TipoExp.VERACIDAD;
@@ -86,15 +87,19 @@ public class ExpServ {
             imagenes.add(newImg);
         }
 
-        Exped newExped = new Exped(newId,
+        Exped newExped = new Exped(
             exped.getNombre(),
             tipoExp,
             fecha,
             imagenes
         );
-        expedientes.put(newId, newExped);
 
-        System.out.println(expedientes.toString());
+        for(Exped existExped : StateManagement.usuarioExpediente.get(usuario)){
+            if(existExped.equals(newExped)){
+                    throw new IllegalArgumentException("El expediente ya existe.");
+            }
+        }
+        StateManagement.usuarioExpediente.get(usuario).add(newExped);
 
         return toDTO(newExped);
     }

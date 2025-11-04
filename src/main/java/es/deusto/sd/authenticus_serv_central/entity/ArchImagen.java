@@ -1,5 +1,7 @@
 package es.deusto.sd.authenticus_serv_central.entity;
 
+import java.util.Objects;
+
 public class ArchImagen {
     private String nombre;
     private String path;
@@ -34,5 +36,18 @@ public class ArchImagen {
     @Override
     public String toString() {
         return this.path + "/" + this.nombre;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof ArchImagen)) return false;
+        ArchImagen other = (ArchImagen) obj;
+        return nombre.equals(other.nombre) && path.equals(other.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.nombre, this.path);
     }
 }

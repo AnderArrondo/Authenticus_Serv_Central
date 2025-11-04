@@ -2,6 +2,7 @@ package es.deusto.sd.authenticus_serv_central.entity;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class Exped {
     private String nombre;
@@ -51,5 +52,18 @@ public class Exped {
 
     public void setImagenes(List<ArchImagen> imagenes) {
         this.imagenes = imagenes;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Exped)) return false;
+        Exped other = (Exped) obj;
+        return nombre.equals(other.nombre); // nombre como atributo unico
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.nombre);
     }
 }
