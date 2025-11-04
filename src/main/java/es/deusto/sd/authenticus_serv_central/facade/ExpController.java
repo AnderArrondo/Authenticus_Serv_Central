@@ -40,12 +40,13 @@ public class ExpController {
     )
     @ApiResponse(responseCode = "201", description = "Expediente creado correctamente")
     @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente")
-    @PostMapping("/crea")
+    @PostMapping("/crea/{token}")
     public ResponseEntity<?> crearExpediente(
         @Parameter(description = "Objeto Expediente a crear", required = true)
-        @RequestBody ExpedDTO expedDTO) {
+        @RequestBody ExpedDTO expedDTO,
+        @PathVariable String token) {
         try {
-            ExpedDTO newExped = expedServ.crearExpediente(expedDTO);
+            ExpedDTO newExped = expedServ.crearExpediente(expedDTO, token);
             return new ResponseEntity<ExpedDTO>(newExped, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

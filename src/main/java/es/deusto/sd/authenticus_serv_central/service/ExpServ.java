@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 
 import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
@@ -56,7 +57,11 @@ public class ExpServ {
         expedientes.put(exped.getId(), exped);
     }
 
-    public ExpedDTO crearExpediente(ExpedDTO exped) throws IllegalArgumentException, ParseException {
+    public ExpedDTO crearExpediente(ExpedDTO exped, String token) throws IllegalArgumentException, ParseException {
+        if(!StateManagement.isActiveToken(token)){
+            throw new IllegalArgumentException("Token inválido o sesión no iniciada.");
+        }
+        
         long newId = idGenExp.incrementAndGet();
         TipoExp tipoExp;
         Date fecha = dtFormatter.parse(exped.getFecha());
