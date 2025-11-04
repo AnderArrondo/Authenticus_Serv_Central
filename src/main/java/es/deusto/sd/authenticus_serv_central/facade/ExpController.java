@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
-import es.deusto.sd.authenticus_serv_central.entity.Exped;
 import es.deusto.sd.authenticus_serv_central.service.ExpServ;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
