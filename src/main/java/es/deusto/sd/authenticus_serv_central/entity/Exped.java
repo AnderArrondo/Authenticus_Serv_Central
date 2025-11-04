@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 public class Exped {
-    private long id;
     private String nombre;
     private TipoExp tipo;
     private Date fecha;
@@ -12,18 +11,13 @@ public class Exped {
 
     public Exped() {}
 
-    public Exped(long id, String nombre, TipoExp tipo, Date fecha, List<ArchImagen> imagenes) {
-        this.id = id;
+    public Exped(String nombre, TipoExp tipo, Date fecha, List<ArchImagen> imagenes) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.fecha = fecha;
         this.imagenes = imagenes;
     }
 
-
-    public long getId() {
-        return id;
-    }
 
     public String getNombre() {
         return nombre;
