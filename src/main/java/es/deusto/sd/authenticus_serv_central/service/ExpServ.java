@@ -17,6 +17,8 @@ import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
+import es.deusto.sd.authenticus_serv_central.dto.ResultadoDTO;
+import es.deusto.sd.authenticus_serv_central.dto.ArchivoResultadoDTO;
 
 @Service
 public class ExpServ {
@@ -106,5 +108,80 @@ public class ExpServ {
             exped.getFecha().toString(),
             exped.getImagenes().toString()
         );
+    }
+
+    private final Map<Long, List<Exped>> casosPorUsuario = new HashMap<>();
+
+    public void setCasosDeUsuario(long userId, List<Exped> casos) {
+
+        casosPorUsuario.put(userId, new ArrayList<>(casos));
+    }
+
+    private List<Exped> obtenerLista(long userId) {
+
+        return casosPorUsuario.computeIfAbsent(userId, k -> new ArrayList<>());
+    }
+
+    public void addCaso(long userId, Exped e) {
+
+        obtenerLista(userId).add(e);
+    }
+
+    public boolean eliminarCaso(long userId, long casoId) {
+
+        List<Exped> lista = obtenerLista(userId);
+        return lista.removeIf(e -> e.getId() == casoId);
+    }
+
+    public ResultadoDTO resultadosDeCaso(long userId, long casoId) {
+
+        List<Exped> lista = obtenerLista(userId);
+        Exped caso = lista.stream().filter(e -> e.getId() == casoId).findFirst()
+
+            .orElseThrow(() -> new IllegalArgumentException("Caso no encontrado"));
+
+        java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        java.util.List<ArchivoResultadoDTO> archivos = new java.util.ArrayList<>();
+
+        for (es.deusto.sd.authenticus_serv_central.entity.ArchImagen img : caso.getImagenes()) {
+
+            double integridad = -1.0;
+
+            double veracidad = -1.0;
+
+            switch (caso.getTipo()) {
+
+                case INTEGRIDAD:
+                    integridad = generarPuntuacion(img);
+                    break;
+
+                case VERACIDAD:
+                    veracidad = generarPuntuacion(img);
+                    break;
+
+                case AMBAS:
+                    integridad = generarPuntuacion(img);
+                    veracidad = generarPuntuacion(img);
+                    break;
+            }
+
+            archivos.add(new ArchivoResultadoDTO(img.getFilePath(), integridad, veracidad));
+        }
+
+        return new ResultadoDTO(
+            caso.getId(),
+            caso.getNombre(),
+            caso.getTipo().toString(),
+            df.format(caso.getFecha()),
+            archivos
+        );
+    }
+
+    private double generarPuntuacion(es.deusto.sd.authenticus_serv_central.entity.ArchImagen img) {
+
+        int h = (img.getNombre() + "." + img.getExtension()).hashCode();
+        double v = (h & 0x7fffffff) / (double) Integer.MAX_VALUE; 
+        return Math.round(v * 1000.0) / 1000.0; 
+        // 3 decimales
     }
 }

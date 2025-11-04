@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
+import es.deusto.sd.authenticus_serv_central.dto.ResultadoDTO;
 import es.deusto.sd.authenticus_serv_central.service.ExpServ;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,11 +12,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 
 @RestController
@@ -48,5 +55,29 @@ public class ExpController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-}
+
     
+
+    @Operation(summary = "Eliminar un caso de investigación")
+    @ApiResponse(responseCode = "200", description = "Caso eliminado o no existente")
+    @DeleteMapping("/users/{userId}/casos/{casoId}")
+    public Map<String, Object> eliminarCaso(
+            @PathVariable long userId,
+            @PathVariable long casoId) {
+
+        boolean ok = expedServ.eliminarCaso(userId, casoId);
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("eliminado", ok);
+        return resp;
+    }
+
+    @Operation(summary = "Mostrar resultados de un caso de investigación")
+    @ApiResponse(responseCode = "200", description = "Resultados del caso")
+    @GetMapping("/users/{userId}/casos/{casoId}/resultados")
+    public ResultadoDTO resultados(
+            @PathVariable long userId,
+            @PathVariable long casoId) {
+
+        return expedServ.resultadosDeCaso(userId, casoId);
+    }
+}
