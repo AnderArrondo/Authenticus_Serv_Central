@@ -8,9 +8,6 @@ public class ExpedDTO {
     private String fecha;
     private List<String> imagenes;
 
-
-    public ExpedDTO() {}
-
     public ExpedDTO(String nombre, String tipo, String fecha, List<String> imagenes) {
         this.nombre = nombre;
         this.tipo = tipo;

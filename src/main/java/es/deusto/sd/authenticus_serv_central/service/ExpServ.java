@@ -23,20 +23,13 @@ import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 public class ExpServ {
     SimpleDateFormat dtFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
-    private final Map<Long, ArchImagen> imagenes = new HashMap<>();
-    private final AtomicLong idGenImg = new AtomicLong(0);
     private final Map<Long, Exped> expedientes = new HashMap<>();
     private final AtomicLong idGenExp = new AtomicLong(0);
 
     public ExpServ() {
         ArchImagen img1, img2;
-        img1 = new ArchImagen(idGenImg.incrementAndGet(),
-            "escenario_crimen", ".jpg", "C:/imagenes");
-        img2 = new ArchImagen(idGenImg.incrementAndGet(),
-            "prueba1", ".png", "C:/imagenes");
-        imagenes.put(idGenImg.incrementAndGet(), img1);
-        imagenes.put(idGenImg.incrementAndGet(), img2);
-
+        img1 = new ArchImagen("C:/imagenes/escenario_crimen.jpg");
+        img2 = new ArchImagen("C:/imagenes/prueba1.png");
 
         Date date;
         Calendar calendar;
@@ -79,12 +72,13 @@ public class ExpServ {
                 break;
         
             default:
-                throw new IllegalArgumentException("Tipo de expediente no válido");
+                throw new IllegalArgumentException("Tipo de expediente no válido.");
         }
 
         List<ArchImagen> imagenes = new ArrayList<>();
-        for (String img : exped.getImagenes().split(",")) {
-            imagenes.add(new ArchImagen(idGenImg.incrementAndGet(), img.trim()));
+        for(String img : exped.getImagenes()){
+            ArchImagen newImg = new ArchImagen(img);
+            imagenes.add(newImg);
         }
 
         Exped newExped = new Exped(newId,
@@ -105,7 +99,9 @@ public class ExpServ {
             exped.getNombre(),
             exped.getTipo().toString(),
             exped.getFecha().toString(),
-            exped.getImagenes().toString()
+            exped.getImagenes().stream()
+                .map(ArchImagen::toString)
+                .toList()
         );
     }
 

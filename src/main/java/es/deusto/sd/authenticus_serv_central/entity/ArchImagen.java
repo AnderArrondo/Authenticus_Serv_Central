@@ -30,4 +30,9 @@ public class ArchImagen {
     public void setPath(String path) {
         this.path = path;
     }
+
+    @Override
+    public String toString() {
+        return this.path + "/" + this.nombre;
+    }
 }
