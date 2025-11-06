@@ -190,4 +190,25 @@ public class ExpServ {
         
         return expedientesCons;
     }
+
+    public void ainadirArchivosAdicionales(String nombreCaso, String token, List<String> archivos)throws Exception{
+
+        if(StateManagement.isActiveToken(token)){
+
+            for(List<Exped> e: StateManagement.usuarioExpediente.values()){
+
+                for(Exped ex: e){
+
+                    if(ex.getNombre().equals(nombreCaso)){
+
+                        ex.add(toArchImagenList(archivos));
+                    }
+                }
+            }
+        }
+        else{
+
+            throw new Exception("No ha iniciado sesión");
+        }
+    }
 }

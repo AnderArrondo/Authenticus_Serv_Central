@@ -66,4 +66,12 @@ public class Exped {
     public int hashCode() {
         return Objects.hash(this.nombre);
     }
+
+    public void add(List<ArchImagen> imagenes){
+        
+        for(ArchImagen a: imagenes){
+            this.imagenes.add(a);
+        }
+       
+    }
 }
