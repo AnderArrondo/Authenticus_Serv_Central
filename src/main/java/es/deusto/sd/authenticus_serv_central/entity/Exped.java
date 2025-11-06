@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
 public class Exped {
     private String nombre;
     private TipoExp tipo;
