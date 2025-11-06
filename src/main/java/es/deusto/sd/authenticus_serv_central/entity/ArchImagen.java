@@ -1,61 +1,53 @@
 package es.deusto.sd.authenticus_serv_central.entity;
 
+import java.util.Objects;
+
 public class ArchImagen {
-    private long id;
     private String nombre;
-    private String extension;
     private String path;
 
-    public ArchImagen(long id, String nombre, String extension, String path) {
-        this.id = id;
+    public ArchImagen(String nombre, String path) {
         this.nombre = nombre;
-        this.extension = extension;
         this.path = path;
     }
 
-    public ArchImagen(long id, String absPath) {
-        this.id = id;
-        String[] parts = absPath.replace("\\", "/").split("/");
-        String fileName = parts[parts.length - 1];
-        this.path = absPath.replace("/" + fileName, "/");
-        String[] nameParts = fileName.split("\\.");
-        this.nombre = nameParts[0];
-        this.extension = nameParts.length > 1 ? nameParts[1] : "";
-    }
-
-    public long getId() {
-        return id;
+    public ArchImagen(String absPath) {
+        String[] parts = absPath.split("/");
+        this.nombre = parts[parts.length - 1];
+        this.path = absPath.substring(0, absPath.lastIndexOf("/"));
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public String getExtension() {
-        return extension;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getPath() {
         return path;
     }
 
-
-    // no setId()
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public void setExtension(String extension) {
-        this.extension = extension;
-    }
-
     public void setPath(String path) {
         this.path = path;
     }
 
+    @Override
+    public String toString() {
+        return this.path + "/" + this.nombre;
+    }
 
-    public String getFilePath() {
-        return this.path + this.nombre + "." + this.extension;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof ArchImagen)) return false;
+        ArchImagen other = (ArchImagen) obj;
+        return nombre.equals(other.nombre) && path.equals(other.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.nombre, this.path);
     }
 }

@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
 
@@ -18,86 +17,101 @@ import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
+import es.deusto.sd.authenticus_serv_central.entity.User;
 
 @Service
 public class ExpServ {
     SimpleDateFormat dtFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
-    private final Map<Long, ArchImagen> imagenes = new HashMap<>();
-    private final AtomicLong idGenImg = new AtomicLong(0);
     private final Map<Long, Exped> expedientes = new HashMap<>();
-    private final AtomicLong idGenExp = new AtomicLong(0);
 
     public ExpServ() {
-        ArchImagen img1, img2;
-        img1 = new ArchImagen(idGenImg.incrementAndGet(),
-            "escenario_crimen", ".jpg", "C:/imagenes");
-        img2 = new ArchImagen(idGenImg.incrementAndGet(),
-            "prueba1", ".png", "C:/imagenes");
-        imagenes.put(idGenImg.incrementAndGet(), img1);
-        imagenes.put(idGenImg.incrementAndGet(), img2);
+        // Imágenes de prueba
+        ArchImagen img1 = new ArchImagen("C:/imagenes/escenario_crimen.jpg");
+        ArchImagen img2 = new ArchImagen("C:/imagenes/prueba1.png");
+        ArchImagen img3 = new ArchImagen("C:/imagenes/pistas.jpg");
 
-
+        // Crear varios expedientes y rellenar el mapa local 'expedientes'
+        Calendar calendar = Calendar.getInstance();
         Date date;
-        Calendar calendar;
-        calendar = Calendar.getInstance();
 
         calendar.set(2024, Calendar.JANUARY, 15);
         date = calendar.getTime();
-        Exped exped = new Exped(idGenExp.incrementAndGet(),
-            "Caso Styles", TipoExp.AMBAS, date, List.of(img1, img2));
-        expedientes.put(exped.getId(), exped);
+        Exped exped1 = new Exped("Caso Styles", TipoExp.AMBAS, date, List.of(img1, img2));
 
         calendar.set(2020, Calendar.JUNE, 30);
         date = calendar.getTime();
-        exped = new Exped(idGenExp.incrementAndGet(),
-            "Caso Benedicto", TipoExp.VERACIDAD, date, List.of(img1)
-        );
-        expedientes.put(exped.getId(), exped);
+        Exped exped2 = new Exped("Caso Benedicto", TipoExp.VERACIDAD, date, List.of(img1));
 
         calendar.set(2017, Calendar.DECEMBER, 2);
         date = calendar.getTime();
-        exped = new Exped(idGenExp.incrementAndGet(),
-            "Caso Pamela", TipoExp.INTEGRIDAD, date, List.of(img2)
-        );
-        expedientes.put(exped.getId(), exped);
+        Exped exped3 = new Exped("Caso Pamela", TipoExp.INTEGRIDAD, date, List.of(img2, img3));
+
+        User user1 = new User("user1@gmail.com", "password123", "User One", "123456789");
+        User user2 = new User("user2@gmail.com", "password456", "User Two", "987654321");
+
+        StateManagement.usuarioExpediente.put(user1, new ArrayList<>(List.of(exped1, exped2)));
+        StateManagement.usuarioExpediente.put(user2, new ArrayList<>(List.of(exped3)));
+
+        StateManagement.tokenUsuario.put("token_user1", user1);
+        StateManagement.tokenUsuario.put("token_user2", user2);
     }
 
-    public ExpedDTO crearExpediente(ExpedDTO exped) throws IllegalArgumentException, ParseException {
-        long newId = idGenExp.incrementAndGet();
-        TipoExp tipoExp;
-        Date fecha = dtFormatter.parse(exped.getFecha());
-        switch (exped.getTipo().toString().toUpperCase()) {
-            case "VERACIDAD":
-                tipoExp = TipoExp.VERACIDAD;
-                break;
-            case "INTEGRIDAD":
-                tipoExp = TipoExp.INTEGRIDAD;
-                break;
-            case "AMBAS":   
-                tipoExp = TipoExp.AMBAS;
-                break;
+    public ExpedDTO crearExpediente(ExpedDTO expedDTO, String token) throws IllegalArgumentException, ParseException {
+        if(!StateManagement.isActiveToken(token)){
+            throw new IllegalArgumentException("Token inválido o sesión no iniciada.");
+        }
+        User usuario = StateManagement.tokenUsuario.get(token);
         
-            default:
-                throw new IllegalArgumentException("Tipo de expediente no válido");
-        }
+        Date fecha = dtFormatter.parse(expedDTO.getFecha());
+        TipoExp tipoExp = parseTipoExp(expedDTO.getTipo());
 
-        List<ArchImagen> imagenes = new ArrayList<>();
-        for (String img : exped.getImagenes().split(",")) {
-            imagenes.add(new ArchImagen(idGenImg.incrementAndGet(), img.trim()));
-        }
+        List<ArchImagen> imagenes = toArchImagenList(expedDTO.getImagenes());
 
-        Exped newExped = new Exped(newId,
-            exped.getNombre(),
+        Exped exped = new Exped(
+            expedDTO.getNombre(),
             tipoExp,
             fecha,
             imagenes
         );
-        expedientes.put(newId, newExped);
 
-        System.out.println(expedientes.toString());
+        if(existeExpediente(exped, usuario)) {
+            throw new IllegalArgumentException("El expediente ya existe.");
+        }
+        StateManagement.usuarioExpediente.get(usuario).add(exped);
 
-        return toDTO(newExped);
+        return toDTO(exped);
+    }
+
+    private boolean existeExpediente(Exped newExped, User usuario){
+        for(Exped exped : StateManagement.usuarioExpediente.get(usuario)){
+            if(exped.equals(newExped)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<ArchImagen> toArchImagenList(List<String> imagenesStr){
+        List<ArchImagen> imagenes = new ArrayList<>();
+        for(String img : imagenesStr){
+            ArchImagen newImg = new ArchImagen(img);
+            imagenes.add(newImg);
+        }
+        return imagenes;
+    }
+
+    private TipoExp parseTipoExp(String tipo) throws IllegalArgumentException {
+        switch (tipo.toUpperCase()) {
+            case "VERACIDAD":
+                return TipoExp.VERACIDAD;
+            case "INTEGRIDAD":
+                return TipoExp.INTEGRIDAD;
+            case "AMBAS":
+                return TipoExp.AMBAS;
+            default:
+                throw new IllegalArgumentException("Tipo de expediente no válido.");
+        }
     }
 
     private ExpedDTO toDTO(Exped exped) {
@@ -105,65 +119,75 @@ public class ExpServ {
             exped.getNombre(),
             exped.getTipo().toString(),
             exped.getFecha().toString(),
-            exped.getImagenes().toString()
+            exped.getImagenes().stream()
+                .map(ArchImagen::toString)
+                .toList()
         );
     }
 
-    public List<ExpedDTO> consultaExped(Optional<Integer> numCasos, Optional<String> dateIni, Optional<String> dateFin) throws IllegalArgumentException{
+    public List<ExpedDTO> consultaExped(Optional<Integer> numCasos, Optional<String> dateIni, Optional<String> dateFin, String token) throws IllegalArgumentException, Exception{
         List<ExpedDTO> expedientesCons;
 
-        if(numCasos.isPresent()){
+        if(StateManagement.isActiveToken(token)){
+
+            if(numCasos.isPresent()){
             
-            Integer nCasos = numCasos.get();
-            expedientesCons = expedientes.values().stream()
-            .sorted(Comparator.comparing(Exped::getFecha).reversed())
-            .limit(nCasos)
-            .map(this::toDTO)  
-            .toList();
-            
-        }
-        else if(dateIni.isPresent() && dateFin.isPresent()){
-            expedientesCons = new ArrayList<>();
-            Optional<Date> fechaIni = dateIni.map(fechaStr -> {
-                try {
-                    return dtFormatter.parse(fechaStr);
-                } catch (ParseException e) {
-                    throw new RuntimeException("Formato inválido: " + fechaStr, e);
-                }
-            }); 
-            Optional<Date> fechaFin = dateFin.map(fechaStr -> {
-                try {
-                    return dtFormatter.parse(fechaStr);
-                } catch (ParseException e) {
-                    throw new RuntimeException("Formato inválido: " + fechaStr, e);
-                }
-            });
-            Date fechaInicio = fechaIni.get();
-            Date fechaFinal = fechaFin.get();
-
-            for(Exped expediente: expedientes.values()){
-
-                if((expediente.getFecha().equals(fechaInicio) || expediente.getFecha().after(fechaInicio))
-                    && (expediente.getFecha().equals(fechaFinal) || expediente.getFecha().before(fechaFinal))){
-
-                        expedientesCons.add(toDTO(expediente));
+                Integer nCasos = numCasos.get();
+                expedientesCons = expedientes.values().stream()
+                .sorted(Comparator.comparing(Exped::getFecha).reversed())
+                .limit(nCasos)
+                .map(this::toDTO)  
+                .toList();
+                
+            }
+            else if(dateIni.isPresent() && dateFin.isPresent()){
+                expedientesCons = new ArrayList<>();
+                Optional<Date> fechaIni = dateIni.map(fechaStr -> {
+                    try {
+                        return dtFormatter.parse(fechaStr);
+                    } catch (ParseException e) {
+                        throw new RuntimeException("Formato inválido: " + fechaStr, e);
+                    }
+                }); 
+                Optional<Date> fechaFin = dateFin.map(fechaStr -> {
+                    try {
+                        return dtFormatter.parse(fechaStr);
+                    } catch (ParseException e) {
+                        throw new RuntimeException("Formato inválido: " + fechaStr, e);
+                    }
+                });
+                Date fechaInicio = fechaIni.get();
+                Date fechaFinal = fechaFin.get();
+    
+                for(Exped expediente: expedientes.values()){
+    
+                    if((expediente.getFecha().equals(fechaInicio) || expediente.getFecha().after(fechaInicio))
+                        && (expediente.getFecha().equals(fechaFinal) || expediente.getFecha().before(fechaFinal))){
+    
+                            expedientesCons.add(toDTO(expediente));
+                    }
                 }
             }
-        }
-
-        else if(dateIni.isPresent() || dateFin.isPresent()){
-
-            throw new IllegalArgumentException("Fecha de inicio o Fecha de fin no introducidos");
+    
+            else if(dateIni.isPresent() || dateFin.isPresent()){
+    
+                throw new IllegalArgumentException("Fecha de inicio o Fecha de fin no introducidos");
+            }
+            else{
+    
+                Integer nCasos = 5;
+                expedientesCons = expedientes.values().stream()
+                .sorted(Comparator.comparing(Exped::getFecha).reversed())
+                .limit(nCasos)
+                .map(this::toDTO)  
+                .toList();
+            }
         }
         else{
 
-            Integer nCasos = 5;
-            expedientesCons = expedientes.values().stream()
-            .sorted(Comparator.comparing(Exped::getFecha).reversed())
-            .limit(nCasos)
-            .map(this::toDTO)  
-            .toList();
+            throw new Exception("No ha iniciado sesión");
         }
+        
         return expedientesCons;
     }
 }

@@ -1,12 +1,14 @@
 package es.deusto.sd.authenticus_serv_central.entity;
 
+import java.util.Objects;
+
 public class User {
     private String email;
     private String contrasena;
     private String nombre;
-    private int telefono;
+    private String telefono;
 
-    public User(String email, String contrasena, String nombre, int telefono) {
+    public User(String email, String contrasena, String nombre, String telefono) {
         this.email = email;
         this.contrasena = contrasena;
         this.nombre = nombre;
@@ -27,7 +29,7 @@ public class User {
         return nombre;
     }
 
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
@@ -41,7 +43,7 @@ public class User {
         this.nombre = nombre;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
@@ -63,14 +65,14 @@ public class User {
         User other = (User) obj;
         if (email == null && other.email != null) {
             return false;
-        } else if (!email.equals(other.email))
+        } else if (!email.equals(other.email)) // email como atributo unico
             return false;
         return true;
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hash(this.email);
     }
 }
 
