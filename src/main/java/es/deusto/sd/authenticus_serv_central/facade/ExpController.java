@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 @RestController
@@ -75,5 +77,26 @@ public class ExpController {
         
     }
     
+    @Operation(
+        summary = "Añadir archivos a un caso",
+        description = "Añade archivos adicionales al caso de uso que que quieras."
+    )
+    @ApiResponse(responseCode = "201", description = "Expediente encontrado correctamente")
+    @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente")
+    @PutMapping("/ainadir")
+    public ResponseEntity<?> ainadirArchivosExpediente(
+        @RequestParam(required = true) String nombre, 
+        @RequestParam(required = true) String token,
+        @RequestBody(required = true) List<String> archivos) {
+        
+        try{
+            expedServ.ainadirArchivosAdicionales(nombre, token, archivos);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch(Exception e){
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
     
