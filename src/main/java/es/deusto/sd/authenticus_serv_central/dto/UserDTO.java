@@ -1,10 +1,20 @@
 package es.deusto.sd.authenticus_serv_central.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class UserDTO {
     
+    @Id
+    @Schema(name="Email", description="Email del usuario", example="ramon@gmail.com", requiredMode=Schema.RequiredMode.REQUIRED)
     private String email;
+    @Schema(name="Contraseña", description="Contraseña del usuario", example="123", requiredMode=Schema.RequiredMode.REQUIRED)
     private String contrasena;
+    @Schema(name="Nombre", description="Nombre del usuario", example="Ramon", requiredMode=Schema.RequiredMode.REQUIRED)
     private String nombre;
+    @Schema(name="Telefono", description="Numero de telefono del usuario", example="943271854", requiredMode=Schema.RequiredMode.REQUIRED)
     private String telefono;
 
     public UserDTO() {
