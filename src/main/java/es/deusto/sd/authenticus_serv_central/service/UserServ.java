@@ -2,6 +2,7 @@ package es.deusto.sd.authenticus_serv_central.service;
 
 import org.springframework.stereotype.Service;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
+import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginRequestDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
@@ -54,17 +55,13 @@ public class UserServ {
     
 
     public LoginResponseDTO login(LoginRequestDTO loginDTO) { 
-        User user = simulatedUserDatabase.get(loginDTO.getEmail());
+        User user = StateManagement.usuarios.get(loginDTO.getEmail());
         if (user == null || !user.getContrasena().equals(loginDTO.getContrasena())) {
             throw new IllegalArgumentException("Email o contraseña incorrectos."); 
         }
-            String token = UUID.randomUUID().toString();
-            activeTokens.put(token, user); 
-            System.out.println("SIMULACIÓN: Login exitoso.");
-            System.out.println(" - Usuario: " + user.getEmail()); 
-            System.out.println(" - Token generado: " + token); 
-            System.out.println(" - Tokens activos ahora: " + activeTokens.size());
-            return new LoginResponseDTO(token); } 
+        String token = UUID.randomUUID().toString();
+        StateManagement.tokenUsuario.put(token, user); 
+        return new LoginResponseDTO(token); } 
 
 
     /**
@@ -97,7 +94,7 @@ public class UserServ {
         StateManagement.usuarioExpediente.remove(user);
         StateManagement.tokenUsuario.remove(token);
         StateManagement.usuarios.remove(user);       
-    }
+}
 }
      
 
