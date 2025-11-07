@@ -59,16 +59,13 @@ public class UserCon {
      * @param token 
      * @return 
      */
-    @PostMapping("/logout")
+    @PostMapping("/logout/{token}")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
         
-        String extractedToken = token;
-        if (token.startsWith("Bearer ")) {
-            extractedToken = token.substring(7);
-        }
+        
         
         try {
-            userServ.logout(extractedToken);
+            userServ.logout(token);
             // 200 OK con un mensaje simple
             return ResponseEntity.ok().body("Logout exitoso.");
         } catch (IllegalArgumentException e) {
@@ -85,9 +82,8 @@ public class UserCon {
     @DeleteMapping("/remove/{token}") // Usamos DELETE para eliminar un recurso 
     public ResponseEntity<?> remove(@PathVariable String token) { 
         String extractedToken = token; 
-        if (token.startsWith("Bearer ")) { 
-            extractedToken = token.substring(7); 
-        } try { 
+       
+        try { 
             userServ.removeUser(extractedToken); 
             return ResponseEntity.ok().body("Usuario eliminado correctamente."); 
         } catch (IllegalArgumentException e) { // 401 Unauthorized si el token es inválido 

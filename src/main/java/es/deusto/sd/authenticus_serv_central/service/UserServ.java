@@ -14,8 +14,6 @@ import java.util.UUID;
 @Service
 public class UserServ {
 
-    private Map<String, User> simulatedUserDatabase = new HashMap<>();
-    private Map<String, User> activeTokens = new HashMap<>();
     
     /**
      * @param userDTO
@@ -24,7 +22,7 @@ public class UserServ {
      */
     public UserDTO crearUsuario(UserDTO userDTO) {
 
-        if (simulatedUserDatabase.containsKey(userDTO.getEmail())) {
+        if (StateManagement.usuarios.containsKey(userDTO.getEmail())) {
             throw new IllegalArgumentException("El email ya está registrado.");
         }
 
@@ -39,12 +37,11 @@ public class UserServ {
             userDTO.getTelefono()
         );
 
-        simulatedUserDatabase.put(newUser.getEmail(), newUser);        
-        
+        StateManagement.usuarios.put(newUser.getEmail(), newUser);        
         
         System.out.println("SIMULACIÓN: Creando y 'guardando' usuario...");
         System.out.println(" - Email: " + newUser.getEmail());
-        System.out.println(" - Usuarios 'en BBDD' ahora: " + simulatedUserDatabase.size());
+        System.out.println(" - Usuarios 'en BBDD' ahora: " + StateManagement.usuarios.size());
         
         // Por seguridad, nunca devolvemos la contraseña al cliente.
         userDTO.setContrasena(null); 
@@ -69,14 +66,14 @@ public class UserServ {
      * @throws IllegalArgumentException 
      */
     public void logout(String token) {
-        if (activeTokens.containsKey(token)) {
+        if (StateManagement.isActiveToken(token)) {
             
-            User user = activeTokens.remove(token);
+            User user = StateManagement.tokenUsuario.remove(token);
 
             System.out.println("SIMULACIÓN: Logout exitoso.");
             System.out.println(" - Usuario deslogeado: " + user.getEmail());
             System.out.println(" - Token invalidado: " + token);
-            System.out.println(" - Tokens activos ahora: " + activeTokens.size());
+            System.out.println(" - Tokens activos ahora: " + StateManagement.tokenUsuario.size());
         } else {
             throw new IllegalArgumentException("Token no válido o sesión ya cerrada.");
         }
@@ -91,10 +88,11 @@ public class UserServ {
         }
         
         User user = StateManagement.tokenUsuario.get(token); 
+        StateManagement.usuarios.remove(user.getEmail());
+
         StateManagement.usuarioExpediente.remove(user);
         StateManagement.tokenUsuario.remove(token);
-        StateManagement.usuarios.remove(user);       
-}
+    }
 }
      
 
