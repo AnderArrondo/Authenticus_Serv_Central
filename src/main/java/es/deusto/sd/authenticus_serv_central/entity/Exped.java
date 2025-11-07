@@ -2,9 +2,12 @@ package es.deusto.sd.authenticus_serv_central.entity;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 public class Exped {
-    private long id;
     private String nombre;
     private TipoExp tipo;
     private Date fecha;
@@ -12,18 +15,13 @@ public class Exped {
 
     public Exped() {}
 
-    public Exped(long id, String nombre, TipoExp tipo, Date fecha, List<ArchImagen> imagenes) {
-        this.id = id;
+    public Exped(String nombre, TipoExp tipo, Date fecha, List<ArchImagen> imagenes) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.fecha = fecha;
         this.imagenes = imagenes;
     }
 
-
-    public long getId() {
-        return id;
-    }
 
     public String getNombre() {
         return nombre;
@@ -57,5 +55,26 @@ public class Exped {
 
     public void setImagenes(List<ArchImagen> imagenes) {
         this.imagenes = imagenes;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Exped)) return false;
+        Exped other = (Exped) obj;
+        return nombre.equals(other.nombre); // nombre como atributo unico
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.nombre);
+    }
+
+    public void add(List<ArchImagen> imagenes){
+        
+        for(ArchImagen a: imagenes){
+            this.imagenes.add(a);
+        }
+       
     }
 }

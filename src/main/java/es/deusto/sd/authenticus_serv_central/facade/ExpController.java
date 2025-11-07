@@ -1,22 +1,26 @@
 package es.deusto.sd.authenticus_serv_central.facade;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
+<<<<<<< HEAD
 <<<<<<< HEAD
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
 =======
 import es.deusto.sd.authenticus_serv_central.dto.ResultadoDTO;
 >>>>>>> actualizacionfuncionesalvaro
+=======
+>>>>>>> 5fe1131278b8963d750335008076e82fb37a8298
 import es.deusto.sd.authenticus_serv_central.service.ExpServ;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+<<<<<<< HEAD
 import java.text.ParseException;
 <<<<<<< HEAD
+=======
+>>>>>>> 5fe1131278b8963d750335008076e82fb37a8298
 import java.util.List;
 import java.util.Optional;
 =======
@@ -26,16 +30,23 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 <<<<<<< HEAD
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+<<<<<<< HEAD
 =======
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 >>>>>>> actualizacionfuncionesalvaro
+=======
+import org.springframework.web.bind.annotation.PutMapping;
+>>>>>>> 5fe1131278b8963d750335008076e82fb37a8298
 
 
 
@@ -43,7 +54,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/exped")
 @Tag(name="Expedientes de casos", description="Funcionalidades relativas a los expedientes de casos")
 public class ExpController {
-
     private final ExpServ expedServ;
 
     public ExpController(ExpServ expedServ) {
@@ -56,16 +66,15 @@ public class ExpController {
     )
     @ApiResponse(responseCode = "201", description = "Expediente creado correctamente")
     @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente")
-    @PostMapping("/crea")
+    @PostMapping("/crea/{token}")
     public ResponseEntity<?> crearExpediente(
         @Parameter(description = "Objeto Expediente a crear", required = true)
-        @RequestBody ExpedDTO expedDTO) {
+        @RequestBody ExpedDTO expedDTO,
+        @PathVariable String token) {
         try {
-            ExpedDTO newExped = expedServ.crearExpediente(expedDTO);
+            ExpedDTO newExped = expedServ.crearExpediente(expedDTO, token);
             return new ResponseEntity<ExpedDTO>(newExped, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -77,23 +86,45 @@ public class ExpController {
     )
     @ApiResponse(responseCode = "201", description = "Expediente encontrado correctamente")
     @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente")
-    @GetMapping("/consultar")
+    @GetMapping("/consultar/{token}")
     public ResponseEntity<?> consultarExpediente(
         @RequestParam(required = false) Optional<Integer> numCasos,
         @RequestParam(required = false) Optional<String> fechaIni,
-        @RequestParam(required = false) Optional<String> fechaFin) {
+        @RequestParam(required = false) Optional<String> fechaFin,
+        @PathVariable String token) {
 
         try{
-            List<ExpedDTO> listaExp = expedServ.consultaExped(numCasos, fechaIni, fechaFin);
+            List<ExpedDTO> listaExp = expedServ.consultaExped(numCasos, fechaIni, fechaFin, token);
             return new ResponseEntity<>(listaExp, HttpStatus.FOUND);
         }
 
-        catch (IllegalArgumentException e) {
+        catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }   
         
     }
     
+    @Operation(
+        summary = "Añadir archivos a un caso",
+        description = "Añade archivos adicionales al caso de uso que que quieras."
+    )
+    @ApiResponse(responseCode = "201", description = "Expediente encontrado correctamente")
+    @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente")
+    @PutMapping("/ainadir")
+    public ResponseEntity<?> ainadirArchivosExpediente(
+        @RequestParam(required = true) String nombre, 
+        @RequestParam(required = true) String token,
+        @RequestBody(required = true) List<String> archivos) {
+        
+        try{
+            expedServ.ainadirArchivosAdicionales(nombre, token, archivos);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch(Exception e){
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
 =======
 >>>>>>> actualizacionfuncionesalvaro
