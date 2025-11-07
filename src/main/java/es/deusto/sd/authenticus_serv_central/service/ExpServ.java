@@ -17,12 +17,9 @@ import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
-<<<<<<< HEAD
 import es.deusto.sd.authenticus_serv_central.dto.ResultadoDTO;
 import es.deusto.sd.authenticus_serv_central.dto.ArchivoResultadoDTO;
-=======
 import es.deusto.sd.authenticus_serv_central.entity.User;
->>>>>>> 5fe1131278b8963d750335008076e82fb37a8298
 
 @Service
 public class ExpServ {
