@@ -4,7 +4,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
+<<<<<<< HEAD
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
+=======
+import es.deusto.sd.authenticus_serv_central.dto.ResultadoDTO;
+>>>>>>> actualizacionfuncionesalvaro
 import es.deusto.sd.authenticus_serv_central.service.ExpServ;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,15 +16,26 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.text.ParseException;
+<<<<<<< HEAD
 import java.util.List;
 import java.util.Optional;
+=======
+import java.util.HashMap;
+import java.util.Map;
+>>>>>>> actualizacionfuncionesalvaro
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+<<<<<<< HEAD
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+=======
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+>>>>>>> actualizacionfuncionesalvaro
 
 
 
@@ -55,6 +70,7 @@ public class ExpController {
         }
     }
 
+<<<<<<< HEAD
     @Operation(
         summary = "Consultar casos de investigacion",
         description = "Consulta los ultimos n casos de investigacion o visualiza todos los casos entre una fecha de inicio y una fecha de fin."
@@ -79,4 +95,30 @@ public class ExpController {
     }
     
 }
+=======
+>>>>>>> actualizacionfuncionesalvaro
     
+
+    @Operation(summary = "Eliminar un caso de investigación")
+    @ApiResponse(responseCode = "200", description = "Caso eliminado o no existente")
+    @DeleteMapping("/users/{userId}/casos/{casoId}")
+    public Map<String, Object> eliminarCaso(
+            @PathVariable long userId,
+            @PathVariable long casoId) {
+
+        boolean ok = expedServ.eliminarCaso(userId, casoId);
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("eliminado", ok);
+        return resp;
+    }
+
+    @Operation(summary = "Mostrar resultados de un caso de investigación")
+    @ApiResponse(responseCode = "200", description = "Resultados del caso")
+    @GetMapping("/users/{userId}/casos/{casoId}/resultados")
+    public ResultadoDTO resultados(
+            @PathVariable long userId,
+            @PathVariable long casoId) {
+
+        return expedServ.resultadosDeCaso(userId, casoId);
+    }
+}
