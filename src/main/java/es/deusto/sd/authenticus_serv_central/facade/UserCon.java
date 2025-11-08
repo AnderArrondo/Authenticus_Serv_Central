@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import es.deusto.sd.authenticus_serv_central.dto.LoginRequestDTO;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 import es.deusto.sd.authenticus_serv_central.service.UserServ;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,6 +46,12 @@ public class UserCon {
      * @param loginDTO Datos de login (email, contrasena) en formato JSON. * 
      * @return Un ResponseEntity con el LoginResponseDTO (token) o un error. 
      * */ @PostMapping("/login") 
+
+    @Operation(summary = "Login de usuario",
+               description = "Inicia sesión y devuelve un token de autenticación.")
+               
+    @ApiResponse(responseCode = "200", 
+                description = "Login exitoso, devuelve el token de autenticación.")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginDTO) { 
         try { 
             LoginResponseDTO response = userServ.login(loginDTO); // 200 OK con el token en el cuerpo 
@@ -60,10 +68,7 @@ public class UserCon {
      * @return 
      */
     @PostMapping("/logout/{token}")
-    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
-        
-        
-        
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) { 
         try {
             userServ.logout(token);
             // 200 OK con un mensaje simple
@@ -80,6 +85,12 @@ public class UserCon {
      * @param token El token de autorización (enviado como "Authorization: Bearer <token>"). * 
      * @return Un ResponseEntity con un mensaje de éxito o un error. */ 
     @DeleteMapping("/remove/{token}") // Usamos DELETE para eliminar un recurso 
+
+    @Operation(summary = "Eliminar usuario", 
+                description = "Elimina el usuario asociado al token de sesión proporcionado.")
+
+    @ApiResponse(responseCode = "200", 
+                description = "Usuario eliminado correctamente.")
     public ResponseEntity<?> remove(@PathVariable String token) { 
         String extractedToken = token; 
        
