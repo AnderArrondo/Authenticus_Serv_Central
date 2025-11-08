@@ -136,11 +136,12 @@ public class ExpServ {
         List<ExpedDTO> expedientesCons;
 
         if(StateManagement.isActiveToken(token)){
+            User user = StateManagement.tokenUsuario.get(token);
 
             if(numCasos.isPresent()){
             
                 Integer nCasos = numCasos.get();
-                expedientesCons = expedientes.values().stream()
+                expedientesCons = StateManagement.usuarioExpediente.get(user).stream()
                 .sorted(Comparator.comparing(Exped::getFecha).reversed())
                 .limit(nCasos)
                 .map(this::toDTO)  
@@ -166,7 +167,7 @@ public class ExpServ {
                 Date fechaInicio = fechaIni.get();
                 Date fechaFinal = fechaFin.get();
     
-                for(Exped expediente: expedientes.values()){
+                for(Exped expediente: StateManagement.usuarioExpediente.get(user)){
     
                     if((expediente.getFecha().equals(fechaInicio) || expediente.getFecha().after(fechaInicio))
                         && (expediente.getFecha().equals(fechaFinal) || expediente.getFecha().before(fechaFinal))){
@@ -183,7 +184,7 @@ public class ExpServ {
             else{
     
                 Integer nCasos = 5;
-                expedientesCons = expedientes.values().stream()
+                expedientesCons = StateManagement.usuarioExpediente.get(user).stream()
                 .sorted(Comparator.comparing(Exped::getFecha).reversed())
                 .limit(nCasos)
                 .map(this::toDTO)  
@@ -196,6 +197,7 @@ public class ExpServ {
         }
         
         return expedientesCons;
+    }
 =======
     private final Map<Long, List<Exped>> casosPorUsuario = new HashMap<>();
 
@@ -276,15 +278,13 @@ public class ExpServ {
     public void ainadirArchivosAdicionales(String nombreCaso, String token, List<String> archivos)throws Exception{
 
         if(StateManagement.isActiveToken(token)){
+            User user = StateManagement.tokenUsuario.get(token);
 
-            for(List<Exped> e: StateManagement.usuarioExpediente.values()){
+            for(Exped e: StateManagement.usuarioExpediente.get(user)){
 
-                for(Exped ex: e){
+                if(e.getNombre().equals(nombreCaso)){
 
-                    if(ex.getNombre().equals(nombreCaso)){
-
-                        ex.add(toArchImagenList(archivos));
-                    }
+                    e.add(toArchImagenList(archivos));
                 }
             }
         }
