@@ -83,6 +83,7 @@ public class ExpController {
     @Operation(
         summary = "Consultar casos de investigacion",
         description = "Consulta los ultimos n casos de investigacion o visualiza todos los casos entre una fecha de inicio y una fecha de fin."
+        
     )
     @ApiResponse(responseCode = "201", description = "Expediente encontrado correctamente")
     @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente")
@@ -106,7 +107,14 @@ public class ExpController {
     
     @Operation(
         summary = "Añadir archivos a un caso",
-        description = "Añade archivos adicionales al caso de uso que que quieras."
+        description = "Añade archivos adicionales al caso de uso que que quieras.",
+        parameters = {
+            @Parameter(name = "nombre", description = "nombre del caso", required = true),
+            @Parameter(name = "token", description = "token del usuario", required = true)
+        },
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "lista de archivos a añadir", required = true
+        )
     )
     @ApiResponse(responseCode = "201", description = "Expediente encontrado correctamente")
     @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente")
