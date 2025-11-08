@@ -1,39 +1,43 @@
 package es.deusto.sd.authenticus_serv_central.dto;
 
-import java.util.List;
-
 public class ResultadoDTO {
-    private long casoId;
-    private String nombreCaso;
-    private String tipo;
-    private String fecha; 
-    private List<ArchivoResultadoDTO> archivos;
+    private ExpedDTO expediente;
+    private float puntuacionIntegridad;
+    private float puntuacionVeracidad;
 
-    public ResultadoDTO(long casoId, String nombreCaso, String tipo, String fecha, List<ArchivoResultadoDTO> archivos) {
-        this.casoId = casoId;
-        this.nombreCaso = nombreCaso;
-        this.tipo = tipo;
-        this.fecha = fecha;
-        this.archivos = archivos;
+    public ResultadoDTO(ExpedDTO expediente) {
+        this.expediente = expediente;
+        this.puntuacionIntegridad = -1;
+        this.puntuacionVeracidad = -1;
     }
 
-    public long getCasoId() {
-        return casoId;
+    public ResultadoDTO(ExpedDTO expediente, float puntuacionIntegridad, float puntuacionVeracidad) {
+        this.expediente = expediente;
+        this.puntuacionIntegridad = puntuacionIntegridad;
+        this.puntuacionVeracidad = puntuacionVeracidad;
     }
 
-    public String getNombreCaso() {
-        return nombreCaso;
+    public ExpedDTO getExpediente() {
+        return expediente;
     }
 
-    public String getTipo() {
-        return tipo;
+    public float getPuntuacionIntegridad() {
+        return puntuacionIntegridad;
     }
 
-    public String getFecha() {
-        return fecha;
+    public float getPuntuacionVeracidad() {
+        return puntuacionVeracidad;
     }
 
-    public List<ArchivoResultadoDTO> getArchivos() {
-        return archivos;
+    public void setExpediente(ExpedDTO expediente) {
+        this.expediente = expediente;
+    }
+
+    public void setPuntuacionIntegridad(float puntuacionIntegridad) {
+        this.puntuacionIntegridad = puntuacionIntegridad;
+    }
+
+    public void setPuntuacionVeracidad(float puntuacionVeracidad) {
+        this.puntuacionVeracidad = puntuacionVeracidad;
     }
 }
