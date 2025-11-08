@@ -157,11 +157,17 @@ public class ExpController {
 
     @Operation(summary = "Mostrar resultados de un caso de investigación")
     @ApiResponse(responseCode = "200", description = "Resultados del caso")
-    @GetMapping("/users/{userId}/casos/{casoId}/resultados")
-    public ResultadoDTO resultados(
-            @PathVariable long userId,
-            @PathVariable long casoId) {
-
-        return expedServ.resultadosDeCaso(userId, casoId);
+    @GetMapping("resultados")
+    public ResponseEntity<?> resultados(
+            @RequestParam String token,
+            @RequestParam String nombreCaso) {
+    
+        try {
+            ResultadoDTO resultados = expedServ.resultadosDeCaso(token, nombreCaso);
+            return new ResponseEntity<>(resultados, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }
+    
