@@ -41,8 +41,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 <<<<<<< HEAD
 =======
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 >>>>>>> actualizacionfuncionesalvaro
 =======
 import org.springframework.web.bind.annotation.PutMapping;
@@ -137,7 +135,7 @@ public class ExpController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-}
+
 =======
 >>>>>>> actualizacionfuncionesalvaro
     
@@ -170,4 +168,3 @@ public class ExpController {
         }
     }
 }
-    
