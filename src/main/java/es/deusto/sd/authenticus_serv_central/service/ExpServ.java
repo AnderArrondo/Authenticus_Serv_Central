@@ -216,11 +216,15 @@ public class ExpServ {
         obtenerLista(userId).add(e);
     }
 
-    public boolean eliminarCaso(long userId, long casoId) {
-
-        List<Exped> lista = obtenerLista(userId);
-        return lista.removeIf(e -> e.getId() == casoId);
+    public boolean eliminarCaso(String token, String nombreCaso) throws Exception {
+        if(!StateManagement.isActiveToken(token)){
+            throw new Exception("Token inválido o sesión no iniciada.");
+        }
+        User usuario = StateManagement.tokenUsuario.get(token);
+        List<Exped> listaExpedientes = StateManagement.usuarioExpediente.get(usuario);
+        return listaExpedientes.removeIf(exped -> exped.getNombre().equals(nombreCaso));
     }
+    
 
     public ResultadoDTO resultadosDeCaso(long userId, long casoId) {
 
