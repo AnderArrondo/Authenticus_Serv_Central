@@ -12,7 +12,10 @@ import es.deusto.sd.authenticus_serv_central.dto.LoginRequestDTO;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 import es.deusto.sd.authenticus_serv_central.service.UserServ;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +32,19 @@ public class UserCon {
      * @param userDTO 
      * @return 
      */
+
+    @Operation(summary = "Registro de un nuevo usuario (Sign Up)",
+               description = "Crea un nuevo usuario en el sistema a partir de los datos proporcionados (email, contraseña, nombre, teléfono).")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Usuario creado exitosamente. Devuelve el UserDTO creado (sin contraseña).",
+                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDTO.class))),
+        @ApiResponse(responseCode = "400", description = "Error de validación (ej. email ya registrado, contraseña no válida).",
+                     content = @Content(mediaType = "text/plain")),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor.",
+                     content = @Content(mediaType = "text/plain"))
+    })
     @PostMapping("/signup")
+      
     public ResponseEntity<?> signUp(@RequestBody UserDTO userDTO) {
         try {
             UserDTO createdUser = userServ.crearUsuario(userDTO);
@@ -67,6 +82,18 @@ public class UserCon {
      * @param token 
      * @return 
      */
+
+     @Operation(summary = "Cierre de sesión (Logout)",
+               description = "Invalida un token de sesión activo para cerrar la sesión del usuario.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Logout exitoso.",
+                     content = @Content(mediaType = "text/plain")),
+        @ApiResponse(responseCode = "401", description = "Token no válido o sesión ya cerrada.",
+                     content = @Content(mediaType = "text/plain")),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor.",
+                     content = @Content(mediaType = "text/plain"))
+    })
+    
     @PostMapping("/logout/{token}")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) { 
         try {
