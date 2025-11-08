@@ -82,8 +82,12 @@ public class ExpController {
 <<<<<<< HEAD
     @Operation(
         summary = "Consultar casos de investigacion",
-        description = "Consulta los ultimos n casos de investigacion o visualiza todos los casos entre una fecha de inicio y una fecha de fin."
-        
+        description = "Consulta los ultimos n casos de investigacion o visualiza todos los casos entre una fecha de inicio y una fecha de fin.",
+        parameters = {
+            @Parameter(name = "numCasos", description = "numero de casos que se quieren consultar", required = false),
+            @Parameter(name = "fechaIni", description = "fecha inicio por la que se quiere filtrar casos", required = false),
+            @Parameter(name = "fechaFin", description = "fecha fin por la que se quiere filtrar casos", required = false)
+        }
     )
     @ApiResponse(responseCode = "201", description = "Expediente encontrado correctamente")
     @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente")
