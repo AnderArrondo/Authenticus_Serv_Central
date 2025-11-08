@@ -279,6 +279,10 @@ public class ExpServ {
 >>>>>>> actualizacionfuncionesalvaro
     }
 
+    private double obtenerPuntuacion(ArchImagen img) {
+        return Math.random();
+    }    
+
     public void ainadirArchivosAdicionales(String nombreCaso, String token, List<String> archivos)throws Exception{
 
         if(StateManagement.isActiveToken(token)){
