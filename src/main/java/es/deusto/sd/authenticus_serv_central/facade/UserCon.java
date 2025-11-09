@@ -70,11 +70,6 @@ public class UserCon {
         }
     }
 
-
-    /** * Endpoint para el Login (Inicio de sesión). *
-     * @param loginDTO Datos de login (email, contrasena) en formato JSON. * 
-     * @return Un ResponseEntity con el LoginResponseDTO (token) o un error. 
-     * */
     @GetMapping("/login") 
     @Operation(
         summary = "Login de usuario",
