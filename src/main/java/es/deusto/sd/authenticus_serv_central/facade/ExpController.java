@@ -175,7 +175,9 @@ public class ExpController {
     description = "Caso eliminado correctamente.",
     content = @Content(
         mediaType = "application/json",
-        
+        schema = @Schema(
+                example = "{ \"mensaje\": \"Caso eliminado correctamente.\" }"
+            ))
         )
     @ApiResponse(responseCode = "404", description = "Caso no encontrado. No se han hecho modificaciones.")
     @ApiResponse(responseCode = "400", description = "Datos inválidos para eliminar el caso.")
