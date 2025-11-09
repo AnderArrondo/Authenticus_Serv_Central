@@ -4,12 +4,8 @@ import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 
-@Entity
 public class ExpedDTO {
-    @Id
     @Schema(name="Nombre", description="El nombre del expediente es único para cada expediente de un mismo usuario.", example="Expediente1", requiredMode=Schema.RequiredMode.REQUIRED)
     private String nombre;
 

@@ -8,13 +8,13 @@ import jakarta.persistence.Id;
 public class UserDTO {
     
     @Id
-    @Schema(name="Email", description="Email del usuario", example="ramon@gmail.com", requiredMode=Schema.RequiredMode.REQUIRED)
+    @Schema(name="email", description="Email del usuario, es el atributo que identifica a un usuario.", example="ramon@gmail.com", requiredMode=Schema.RequiredMode.REQUIRED)
     private String email;
-    @Schema(name="Contraseña", description="Contraseña del usuario", example="123", requiredMode=Schema.RequiredMode.REQUIRED)
+    @Schema(name="contrasena", description="Contraseña del usuario, debe contener al menos 8 caracteres.", example="12345678", requiredMode=Schema.RequiredMode.REQUIRED)
     private String contrasena;
-    @Schema(name="Nombre", description="Nombre del usuario", example="Ramon", requiredMode=Schema.RequiredMode.REQUIRED)
+    @Schema(name="nombre", description="Nombre del usuario", example="Ramon", requiredMode=Schema.RequiredMode.REQUIRED)
     private String nombre;
-    @Schema(name="Telefono", description="Numero de telefono del usuario", example="943271854", requiredMode=Schema.RequiredMode.REQUIRED)
+    @Schema(name="telefono", description="Numero de telefono del usuario", example="943271854", requiredMode=Schema.RequiredMode.REQUIRED)
     private String telefono;
 
     public UserDTO() {

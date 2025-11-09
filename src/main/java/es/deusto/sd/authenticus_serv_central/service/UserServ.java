@@ -2,13 +2,10 @@ package es.deusto.sd.authenticus_serv_central.service;
 
 import org.springframework.stereotype.Service;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
-import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginRequestDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
