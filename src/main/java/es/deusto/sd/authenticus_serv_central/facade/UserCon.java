@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequestMapping("/auth") // URL base para la autenticación
+@RequestMapping("/auth") 
 @Tag(name="Gestión de usuario", description="Funcionalidades relativas a los usuarios.")
 public class UserCon {
     private UserServ userServ;
@@ -32,10 +32,6 @@ public class UserCon {
         this.userServ = userServ;
     }
 
-    /**
-     * @param userDTO 
-     * @return 
-     */
 
     @Operation(
         summary = "Registro de un nuevo usuario (Sign Up)",
@@ -74,11 +70,6 @@ public class UserCon {
         }
     }
 
-
-    /** * Endpoint para el Login (Inicio de sesión). *
-     * @param loginDTO Datos de login (email, contrasena) en formato JSON. * 
-     * @return Un ResponseEntity con el LoginResponseDTO (token) o un error. 
-     * */
     @GetMapping("/login") 
     @Operation(
         summary = "Login de usuario",
@@ -110,17 +101,12 @@ public class UserCon {
     )
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginDTO) { 
         try { 
-            LoginResponseDTO response = userServ.login(loginDTO); // 200 OK con el token en el cuerpo 
+            LoginResponseDTO response = userServ.login(loginDTO); 
             return ResponseEntity.ok(response); 
-        } catch (Exception e) { // 401 Unauthorized para credenciales incorrectas 
+        } catch (Exception e) { 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); 
         }
     }   
-
-    /**
-     * @param token 
-     * @return 
-     */
 
     @Operation(summary = "Cierre de sesión (Logout)",
                description = "Invalida un token de sesión activo para cerrar la sesión del usuario.",
@@ -148,18 +134,13 @@ public class UserCon {
     public ResponseEntity<?> logout(@PathVariable String token) { 
         try {
             userServ.logout(token);
-            // 200 OK con un mensaje simple
             return ResponseEntity.ok().body("Logout exitoso.");
         } catch (Exception e) {
-            // 401 Unauthorized si el token es inválido
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    /** 
-     * @param token El token de autorización (enviado como "Authorization: Bearer <token>"). * 
-     * @return Un ResponseEntity con un mensaje de éxito o un error. */ 
-    @DeleteMapping("/remove/{token}") // Usamos DELETE para eliminar un recurso 
+    @DeleteMapping("/remove/{token}")
 
     @Operation(summary = "Eliminar usuario", 
                 description = "Elimina el usuario asociado al token de sesión proporcionado.",
@@ -191,7 +172,7 @@ public class UserCon {
         try { 
             userServ.removeUser(extractedToken); 
             return ResponseEntity.ok().body("Usuario eliminado correctamente."); 
-        } catch (Exception e) { // 401 Unauthorized si el token es inválido 
+        } catch (Exception e) { 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); 
         }
     }   

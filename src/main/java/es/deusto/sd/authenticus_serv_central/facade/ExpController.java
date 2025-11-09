@@ -6,6 +6,8 @@ import es.deusto.sd.authenticus_serv_central.service.ExpServ;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -46,8 +48,38 @@ public class ExpController {
             required = true
         )
     )
-    @ApiResponse(responseCode = "201", description = "Expediente creado correctamente.")
-    @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente.")
+    @ApiResponse(responseCode = "201", description = "Expediente creado correctamente.",
+     content = @Content(
+            mediaType = "application/json",
+            schema = @Schema(implementation = ExpedDTO.class,
+            example = "{\n" +
+                "  \"id\": 1,\n" +
+                "  \"nombre\": \"Caso de investigación A\",\n" +
+                "  \"descripcion\": \"Descripción del expediente\",\n" +
+                "  \"fechaCreacion\": \"09/11/2025\",\n" +
+                "  \"archivos\": [\"doc1.pdf\", \"imagen1.png\"]\n" +
+                "}"
+        )
+            ))
+    @ApiResponse(responseCode = "302",
+    description = "Expediente(s) encontrado(s) correctamente.",
+    content = @Content(
+        mediaType = "application/json",
+        schema = @Schema(
+                implementation = ExpedDTO.class,
+                example = "[{\n" +
+                    "  \"id\": 1,\n" +
+                    "  \"nombre\": \"Caso A\",\n" +
+                    "  \"descripcion\": \"Descripción del caso A\",\n" +
+                    "  \"fechaCreacion\": \"01/10/2025\"\n" +
+                    "}, {\n" +
+                    "  \"id\": 2,\n" +
+                    "  \"nombre\": \"Caso B\",\n" +
+                    "  \"descripcion\": \"Descripción del caso B\",\n" +
+                    "  \"fechaCreacion\": \"03/11/2025\"\n" +
+                    "}]"
+            ))
+        )
     @PostMapping("/crea/{token}")
     public ResponseEntity<?> crearExpediente(
         @Parameter(description = "Objeto Expediente a crear", required = true)
@@ -104,7 +136,14 @@ public class ExpController {
             description = "Lista de archivos a añadir", required = true
         )
     )
-    @ApiResponse(responseCode = "200", description = "Expediente actualizado correctamente.")
+    @ApiResponse(responseCode = "200",
+    description = "Expediente actualizado correctamente.",
+    content = @Content(
+        mediaType = "application/json",
+        schema = @Schema(
+                example = "{ \"mensaje\": \"Archivos añadidos correctamente al expediente.\" }"
+            ))
+        )
     @ApiResponse(responseCode = "400", description = "Datos inválidos para actualizar expediente.")
     @PutMapping("/ainadir/{token}")
     public ResponseEntity<?> ainadirArchivosExpediente(
@@ -132,7 +171,14 @@ public class ExpController {
             @Parameter(name = "nombreCaso", description = "Nombre identificativo del caso que se desea borrar.")
         }
     )
-    @ApiResponse(responseCode = "200", description = "Caso eliminado correctamente.")
+    @ApiResponse(responseCode = "200",
+    description = "Caso eliminado correctamente.",
+    content = @Content(
+        mediaType = "application/json",
+        schema = @Schema(
+                example = "{ \"mensaje\": \"Caso eliminado correctamente.\" }"
+            ))
+        )
     @ApiResponse(responseCode = "404", description = "Caso no encontrado. No se han hecho modificaciones.")
     @ApiResponse(responseCode = "400", description = "Datos inválidos para eliminar el caso.")
     @DeleteMapping("eliminar/{token}")
@@ -162,7 +208,19 @@ public class ExpController {
             @Parameter(name="token", description = "Token de sesión del usuario.", required = true),
             @Parameter(name="nombreCaso", description = "Nombre identificativo del caso del que se desea obtener resultados.", required = true)
         })
-    @ApiResponse(responseCode = "200", description = "Resultados del caso procesados correctamente.")
+    @ApiResponse(responseCode = "200",
+    description = "Resultados del caso procesados correctamente.",
+    content = @Content(
+        mediaType = "application/json",
+        schema = @Schema(
+                implementation = ResultadoDTO.class,
+                example = "{\n" +
+                    "  \"nombreCaso\": \"Caso A\",\n" +
+                    "  \"resultado\": 0.87,\n" +
+                    "  \"tipoProcesamiento\": \"Análisis de texto\"\n" +
+                    "}"
+            ))
+        )
     @ApiResponse(responseCode = "400", description = "Datos inválidos para obtener resultados del caso de investigación.")
     @GetMapping("resultados/{token}")
     public ResponseEntity<?> resultados(
