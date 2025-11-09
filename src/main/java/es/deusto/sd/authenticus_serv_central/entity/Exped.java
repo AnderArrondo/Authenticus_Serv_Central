@@ -4,9 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
 public class Exped {
     private String nombre;
     private TipoExp tipo;
@@ -62,7 +59,7 @@ public class Exped {
         if (this == obj) return true;
         if (!(obj instanceof Exped)) return false;
         Exped other = (Exped) obj;
-        return nombre.equals(other.nombre); // nombre como atributo unico
+        return this.nombre.toUpperCase().equals(other.nombre.toUpperCase()); // nombre como atributo unico
     }
 
     @Override

@@ -65,7 +65,7 @@ public class User {
         User other = (User) obj;
         if (email == null && other.email != null) {
             return false;
-        } else if (!email.equals(other.email)) // email como atributo unico
+        } else if (!email.toUpperCase().equals(other.email.toUpperCase())) // email como atributo unico
             return false;
         return true;
     }

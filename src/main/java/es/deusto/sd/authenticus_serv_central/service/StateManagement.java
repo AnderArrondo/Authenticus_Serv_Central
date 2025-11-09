@@ -13,8 +13,11 @@ import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 import es.deusto.sd.authenticus_serv_central.entity.User;
 
 public class StateManagement {
+    // email -> user
     public static Map<String, User> usuarios = new HashMap<>();
+    // token -> user
     public static Map<String, User> tokenUsuario = new HashMap<>();
+    // user -> listaExp
     public static Map<User, List<Exped>> usuarioExpediente = new HashMap<>();
 
     static {

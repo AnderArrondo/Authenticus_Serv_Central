@@ -165,7 +165,7 @@ public class ExpServ {
         }
         User usuario = StateManagement.tokenUsuario.get(token);
         List<Exped> listaExpedientes = StateManagement.usuarioExpediente.get(usuario);
-        return listaExpedientes.removeIf(exped -> exped.getNombre().equals(nombreCaso));
+        return listaExpedientes.removeIf(exped -> exped.getNombre().toUpperCase().equals(nombreCaso.toUpperCase()));
     }
     
 
@@ -176,7 +176,7 @@ public class ExpServ {
         User usuario = StateManagement.tokenUsuario.get(token);
         List<Exped> listaExpedientes = StateManagement.usuarioExpediente.get(usuario);
         Exped caso = listaExpedientes.stream()
-            .filter(e -> e.getNombre().equals(nombreCaso))
+            .filter(e -> e.getNombre().toUpperCase().equals(nombreCaso.toUpperCase()))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("Caso no encontrado."));
 
@@ -221,7 +221,7 @@ public class ExpServ {
             User user = StateManagement.tokenUsuario.get(token);
 
             for(Exped e: StateManagement.usuarioExpediente.get(user)){
-                if(e.getNombre().equals(nombreCaso)){
+                if(e.getNombre().toUpperCase().equals(nombreCaso.toUpperCase())){
 
                     e.add(toArchImagenList(archivos));
                 }

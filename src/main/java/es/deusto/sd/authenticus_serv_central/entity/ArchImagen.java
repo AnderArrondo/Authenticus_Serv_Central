@@ -43,7 +43,7 @@ public class ArchImagen {
         if (this == obj) return true;
         if (!(obj instanceof ArchImagen)) return false;
         ArchImagen other = (ArchImagen) obj;
-        return nombre.equals(other.nombre) && path.equals(other.path);
+        return this.nombre.toUpperCase().equals(other.nombre.toUpperCase()) && path.toUpperCase().equals(other.path.toUpperCase());
     }
 
     @Override
