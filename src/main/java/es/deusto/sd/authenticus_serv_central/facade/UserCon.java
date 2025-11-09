@@ -108,11 +108,6 @@ public class UserCon {
         }
     }   
 
-    /**
-     * @param token 
-     * @return 
-     */
-
     @Operation(summary = "Cierre de sesión (Logout)",
                description = "Invalida un token de sesión activo para cerrar la sesión del usuario.",
                parameters = {
