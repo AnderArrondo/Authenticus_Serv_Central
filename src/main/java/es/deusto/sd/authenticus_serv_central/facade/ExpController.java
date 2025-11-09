@@ -208,7 +208,12 @@ public class ExpController {
             @Parameter(name="token", description = "Token de sesión del usuario.", required = true),
             @Parameter(name="nombreCaso", description = "Nombre identificativo del caso del que se desea obtener resultados.", required = true)
         })
-    @ApiResponse(responseCode = "200", description = "Resultados del caso procesados correctamente.")
+    @ApiResponse(responseCode = "200",
+    description = "Resultados del caso procesados correctamente.",
+    content = @Content(
+        mediaType = "application/json",
+        
+        )
     @ApiResponse(responseCode = "400", description = "Datos inválidos para obtener resultados del caso de investigación.")
     @GetMapping("resultados/{token}")
     public ResponseEntity<?> resultados(
