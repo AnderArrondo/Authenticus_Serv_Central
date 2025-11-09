@@ -171,7 +171,12 @@ public class ExpController {
             @Parameter(name = "nombreCaso", description = "Nombre identificativo del caso que se desea borrar.")
         }
     )
-    @ApiResponse(responseCode = "200", description = "Caso eliminado correctamente.")
+    @ApiResponse(responseCode = "200",
+    description = "Caso eliminado correctamente.",
+    content = @Content(
+        mediaType = "application/json",
+        
+        )
     @ApiResponse(responseCode = "404", description = "Caso no encontrado. No se han hecho modificaciones.")
     @ApiResponse(responseCode = "400", description = "Datos inválidos para eliminar el caso.")
     @DeleteMapping("eliminar/{token}")
