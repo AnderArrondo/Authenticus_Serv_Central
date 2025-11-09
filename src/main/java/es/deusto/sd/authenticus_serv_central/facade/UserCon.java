@@ -101,9 +101,9 @@ public class UserCon {
     )
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginDTO) { 
         try { 
-            LoginResponseDTO response = userServ.login(loginDTO); // 200 OK con el token en el cuerpo 
+            LoginResponseDTO response = userServ.login(loginDTO); 
             return ResponseEntity.ok(response); 
-        } catch (Exception e) { // 401 Unauthorized para credenciales incorrectas 
+        } catch (Exception e) { 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); 
         }
     }   
