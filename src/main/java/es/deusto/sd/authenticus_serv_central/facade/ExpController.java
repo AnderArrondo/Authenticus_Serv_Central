@@ -65,7 +65,20 @@ public class ExpController {
     description = "Expediente(s) encontrado(s) correctamente.",
     content = @Content(
         mediaType = "application/json",
-        
+        schema = @Schema(
+                implementation = ExpedDTO.class,
+                example = "[{\n" +
+                    "  \"id\": 1,\n" +
+                    "  \"nombre\": \"Caso A\",\n" +
+                    "  \"descripcion\": \"Descripción del caso A\",\n" +
+                    "  \"fechaCreacion\": \"01/10/2025\"\n" +
+                    "}, {\n" +
+                    "  \"id\": 2,\n" +
+                    "  \"nombre\": \"Caso B\",\n" +
+                    "  \"descripcion\": \"Descripción del caso B\",\n" +
+                    "  \"fechaCreacion\": \"03/11/2025\"\n" +
+                    "}]"
+            ))
         )
     @PostMapping("/crea/{token}")
     public ResponseEntity<?> crearExpediente(
