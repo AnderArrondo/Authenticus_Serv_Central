@@ -172,7 +172,7 @@ public class UserCon {
         try { 
             userServ.removeUser(extractedToken); 
             return ResponseEntity.ok().body("Usuario eliminado correctamente."); 
-        } catch (Exception e) { // 401 Unauthorized si el token es inválido 
+        } catch (Exception e) { 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); 
         }
     }   
