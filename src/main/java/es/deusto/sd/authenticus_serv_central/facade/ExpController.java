@@ -212,7 +212,14 @@ public class ExpController {
     description = "Resultados del caso procesados correctamente.",
     content = @Content(
         mediaType = "application/json",
-        
+        schema = @Schema(
+                implementation = ResultadoDTO.class,
+                example = "{\n" +
+                    "  \"nombreCaso\": \"Caso A\",\n" +
+                    "  \"resultado\": 0.87,\n" +
+                    "  \"tipoProcesamiento\": \"Análisis de texto\"\n" +
+                    "}"
+            ))
         )
     @ApiResponse(responseCode = "400", description = "Datos inválidos para obtener resultados del caso de investigación.")
     @GetMapping("resultados/{token}")
