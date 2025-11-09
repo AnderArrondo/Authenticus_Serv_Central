@@ -140,10 +140,7 @@ public class UserCon {
         }
     }
 
-    /** 
-     * @param token El token de autorización (enviado como "Authorization: Bearer <token>"). * 
-     * @return Un ResponseEntity con un mensaje de éxito o un error. */ 
-    @DeleteMapping("/remove/{token}") // Usamos DELETE para eliminar un recurso 
+    @DeleteMapping("/remove/{token}")
 
     @Operation(summary = "Eliminar usuario", 
                 description = "Elimina el usuario asociado al token de sesión proporcionado.",
