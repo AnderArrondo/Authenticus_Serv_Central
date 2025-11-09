@@ -136,7 +136,12 @@ public class ExpController {
             description = "Lista de archivos a añadir", required = true
         )
     )
-    @ApiResponse(responseCode = "200", description = "Expediente actualizado correctamente.")
+    @ApiResponse(responseCode = "200",
+    description = "Expediente actualizado correctamente.",
+    content = @Content(
+        mediaType = "application/json",
+        
+        )
     @ApiResponse(responseCode = "400", description = "Datos inválidos para actualizar expediente.")
     @PutMapping("/ainadir/{token}")
     public ResponseEntity<?> ainadirArchivosExpediente(
