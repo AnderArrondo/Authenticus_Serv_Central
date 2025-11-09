@@ -32,10 +32,6 @@ public class UserCon {
         this.userServ = userServ;
     }
 
-    /**
-     * @param userDTO 
-     * @return 
-     */
 
     @Operation(
         summary = "Registro de un nuevo usuario (Sign Up)",
