@@ -134,10 +134,8 @@ public class UserCon {
     public ResponseEntity<?> logout(@PathVariable String token) { 
         try {
             userServ.logout(token);
-            // 200 OK con un mensaje simple
             return ResponseEntity.ok().body("Logout exitoso.");
         } catch (Exception e) {
-            // 401 Unauthorized si el token es inválido
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
