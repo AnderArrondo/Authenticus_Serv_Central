@@ -61,7 +61,12 @@ public class ExpController {
                 "}"
         )
             ))
-    @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente.")
+    @ApiResponse(responseCode = "302",
+    description = "Expediente(s) encontrado(s) correctamente.",
+    content = @Content(
+        mediaType = "application/json",
+        
+        )
     @PostMapping("/crea/{token}")
     public ResponseEntity<?> crearExpediente(
         @Parameter(description = "Objeto Expediente a crear", required = true)
