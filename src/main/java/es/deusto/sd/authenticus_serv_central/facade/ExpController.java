@@ -140,7 +140,9 @@ public class ExpController {
     description = "Expediente actualizado correctamente.",
     content = @Content(
         mediaType = "application/json",
-        
+        schema = @Schema(
+                example = "{ \"mensaje\": \"Archivos añadidos correctamente al expediente.\" }"
+            ))
         )
     @ApiResponse(responseCode = "400", description = "Datos inválidos para actualizar expediente.")
     @PutMapping("/ainadir/{token}")
