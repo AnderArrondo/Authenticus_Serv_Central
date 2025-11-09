@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequestMapping("/auth") // URL base para la autenticación
+@RequestMapping("/auth") 
 @Tag(name="Gestión de usuario", description="Funcionalidades relativas a los usuarios.")
 public class UserCon {
     private UserServ userServ;
