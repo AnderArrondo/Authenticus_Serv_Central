@@ -51,7 +51,15 @@ public class ExpController {
     @ApiResponse(responseCode = "201", description = "Expediente creado correctamente.",
      content = @Content(
             mediaType = "application/json",
-            schema = @Schema()
+            schema = @Schema(implementation = ExpedDTO.class,
+            example = "{\n" +
+                "  \"id\": 1,\n" +
+                "  \"nombre\": \"Caso de investigación A\",\n" +
+                "  \"descripcion\": \"Descripción del expediente\",\n" +
+                "  \"fechaCreacion\": \"09/11/2025\",\n" +
+                "  \"archivos\": [\"doc1.pdf\", \"imagen1.png\"]\n" +
+                "}"
+        )
             ))
     @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente.")
     @PostMapping("/crea/{token}")
