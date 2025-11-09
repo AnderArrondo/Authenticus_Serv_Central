@@ -6,6 +6,8 @@ import es.deusto.sd.authenticus_serv_central.service.ExpServ;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -46,7 +48,11 @@ public class ExpController {
             required = true
         )
     )
-    @ApiResponse(responseCode = "201", description = "Expediente creado correctamente.")
+    @ApiResponse(responseCode = "201", description = "Expediente creado correctamente.",
+     content = @Content(
+            mediaType = "application/json",
+            schema = @Schema()
+            ))
     @ApiResponse(responseCode = "400", description = "Datos inválidos para crear el expediente.")
     @PostMapping("/crea/{token}")
     public ResponseEntity<?> crearExpediente(
