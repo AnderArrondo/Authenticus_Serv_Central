@@ -6,6 +6,8 @@ import es.deusto.sd.authenticus_serv_central.dto.LoginRequestDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
 
+import java.lang.Thread.State;
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
@@ -34,7 +36,8 @@ public class UserServ {
             userDTO.getTelefono()
         );
 
-        StateManagement.usuarios.put(newUser.getEmail(), newUser);        
+        StateManagement.usuarios.put(newUser.getEmail(), newUser); 
+        StateManagement.usuarioExpediente.put(newUser, new ArrayList<>());       
         
         System.out.println("SIMULACIÓN: Creando y 'guardando' usuario...");
         System.out.println(" - Email: " + newUser.getEmail());
