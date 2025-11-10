@@ -11,16 +11,16 @@ public class ArchImagen {
     public ArchImagen(String nombre, String path) {
         this.nombre = nombre;
         this.path = path;
-        this.pVeracidad = 0.0;
-        this.pIntegridad = 0.0;
+        this.pVeracidad = -1.0;
+        this.pIntegridad = -1.0;
     }
 
     public ArchImagen(String absPath) {
         String[] parts = absPath.split("/");
         this.nombre = parts[parts.length - 1];
         this.path = absPath.substring(0, absPath.lastIndexOf("/"));
-        this.pVeracidad = 0.0;
-        this.pIntegridad = 0.0;
+        this.pVeracidad = -1.0;
+        this.pIntegridad = -1.0;
     }
 
 

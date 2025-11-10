@@ -181,29 +181,19 @@ public class ExpServ {
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("Caso no encontrado."));
 
-        double integridadTotal = -1;
-        double veracidadTotal = -1;
-
         TipoExp tipoCaso = caso.getTipo();
         List<ArchImagen> listaImagenes = caso.getImagenes();
 
-        if(tipoCaso == TipoExp.INTEGRIDAD || tipoCaso == TipoExp.AMBAS) {
-            integridadTotal = 0;
-            for(ArchImagen img : listaImagenes) {
-                integridadTotal += obtenerPuntuacionIntegridad(img);
+        for(ArchImagen img : listaImagenes) {
+            if(tipoCaso == TipoExp.VERACIDAD || tipoCaso == TipoExp.AMBAS) {
+                img.setpVeracidad(obtenerPuntuacionVeracidad(img));
             }
-            integridadTotal /= listaImagenes.size();
+            if(tipoCaso == TipoExp.INTEGRIDAD || tipoCaso == TipoExp.AMBAS) {
+                img.setpIntegridad(obtenerPuntuacionIntegridad(img));
+            }
         }
 
-        if(tipoCaso == TipoExp.VERACIDAD || tipoCaso == TipoExp.AMBAS) {
-            veracidadTotal = 0;
-            for(ArchImagen img : listaImagenes) {
-                veracidadTotal += obtenerPuntuacionVeracidad(img);
-            }
-            veracidadTotal /= listaImagenes.size();
-        }
-        
-        return new ResultadoDTO(toDTO(caso), integridadTotal, veracidadTotal);
+        return new ResultadoDTO(caso.getNombre(), caso.getTipo(), caso.getFecha(), listaImagenes);
     }
 
     // se consideran dos funciones de obtener puntuacion (una por cada tipo)

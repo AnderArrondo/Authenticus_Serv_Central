@@ -189,9 +189,9 @@ public class ExpController {
                 try {
                     boolean result = expedServ.eliminarCaso(token, nombreCaso);
                     if(result) {
-                        return new ResponseEntity<>(HttpStatus.OK);
+                        return new ResponseEntity<>("Caso eliminado correctamente.", HttpStatus.OK);
                     } else {
-                        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                        return new ResponseEntity<>("Caso no encontrado", HttpStatus.NOT_FOUND);
                     }
                 } catch (Exception e) {
                     return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
