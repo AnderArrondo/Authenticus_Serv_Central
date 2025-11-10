@@ -7,7 +7,6 @@ import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class ResultadoDTO {
     @Schema(name="Nombre", description="El nombre del expediente del que provienen los resultados.", example="Expediente1", requiredMode=Schema.RequiredMode.REQUIRED)

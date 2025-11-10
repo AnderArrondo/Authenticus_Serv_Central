@@ -6,7 +6,6 @@ import es.deusto.sd.authenticus_serv_central.dto.LoginRequestDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
 
-import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.UUID;
 
