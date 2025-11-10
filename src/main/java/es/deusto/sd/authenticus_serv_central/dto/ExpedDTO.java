@@ -14,7 +14,7 @@ public class ExpedDTO {
         allowableValues = {"INTEGRIDAD", "VERACIDAD", "AMBAS"}, requiredMode=Schema.RequiredMode.REQUIRED)
     private String tipo;
 
-    @Schema(name="Fecha", description="Fec  ha del expediente en formato <i>dd/MM/yyyy</id>.", example="25/12/2023", requiredMode=Schema.RequiredMode.REQUIRED)
+    @Schema(name="Fecha", description="Fecha del expediente en formato <i>dd/MM/yyyy</id>.", example="25/12/2023", requiredMode=Schema.RequiredMode.REQUIRED)
     private String fecha;
 
     @ArraySchema(
