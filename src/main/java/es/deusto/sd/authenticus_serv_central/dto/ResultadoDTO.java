@@ -9,24 +9,24 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ResultadoDTO {
-    @Schema(name="Nombre", description="El nombre del expediente del que provienen los resultados.", example="Expediente1", requiredMode=Schema.RequiredMode.REQUIRED)
+    @Schema(name="nombre", description="El nombre del expediente del que provienen los resultados.", example="Caso Styles", requiredMode=Schema.RequiredMode.REQUIRED)
     private String nombre;
 
-    @Schema(name="Tipo", description="El tipo de expediente",
+    @Schema(name="tipo", description="El tipo de expediente", example = "AMBAS", 
         allowableValues = {"INTEGRIDAD", "VERACIDAD", "AMBAS"}, requiredMode=Schema.RequiredMode.REQUIRED)
     private TipoExp tipo;
 
-    @Schema(name="Fecha", description="Fecha del expediente en formato <i>dd/MM/yyyy</id>.", example="25/12/2023", requiredMode=Schema.RequiredMode.REQUIRED)
+    @Schema(name="fecha", description="Fecha del expediente en formato <i>dd/MM/yyyy</id>.", example="15/01/2024", requiredMode=Schema.RequiredMode.REQUIRED)
     private Date fecha;
 
     @ArraySchema(
     arraySchema = @Schema(
-        description = "Lista de imágenes asociadas al expediente.",
+        description = "Lista de imágenes asociadas al expediente con sus respectivos resultados de procesamiento..",
         requiredMode = Schema.RequiredMode.REQUIRED
     ),
     schema = @Schema(
         description = "Ruta absoluta de la imagen.",
-        example = "C:/imagenes/imagen1.jpg",
+        implementation = ArchImagen.class,
         requiredMode = Schema.RequiredMode.REQUIRED
     )
 )
