@@ -2,16 +2,11 @@ package es.deusto.sd.authenticus_serv_central.entity;
 
 import java.util.Objects;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ArchImagen {
-    @Schema(name="nombre", example="prueba1.jpg")
     private String nombre;
-    @Schema(name="path", example="C:/caso_styles/pruebas")
     private String path;
-    @Schema(name = "pVeracidad", example="-1")
     private double pVeracidad;
-    @Schema(name = "pIntegridad", example="0.89")
     private double pIntegridad;
 
     public ArchImagen(String nombre, String path) {
