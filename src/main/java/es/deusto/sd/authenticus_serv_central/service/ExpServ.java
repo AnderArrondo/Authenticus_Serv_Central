@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import es.deusto.sd.authenticus_serv_central.dto.ArchImagenDTO;
 import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
@@ -193,7 +194,15 @@ public class ExpServ {
             }
         }
 
-        return new ResultadoDTO(caso.getNombre(), caso.getTipo(), caso.getFecha(), listaImagenes);
+        return new ResultadoDTO(caso.getNombre(), caso.getTipo(), caso.getFecha(), archImagenesToDTO(listaImagenes));
+    }
+
+    private List<ArchImagenDTO> archImagenesToDTO(List<ArchImagen> imagenes) {
+        List<ArchImagenDTO> imagenesDTO = new ArrayList<>();
+        for(ArchImagen img : imagenes) {
+            imagenesDTO.add(new ArchImagenDTO(img.getNombre(), img.getPath()));
+        }
+        return imagenesDTO;
     }
 
     // se consideran dos funciones de obtener puntuacion (una por cada tipo)

@@ -30,9 +30,9 @@ public class ResultadoDTO {
         requiredMode = Schema.RequiredMode.REQUIRED
     )
 )
-    private List<ArchImagen> imagenes;
+    private List<ArchImagenDTO> imagenes;
 
-    public ResultadoDTO(String nombre, TipoExp tipo, Date fecha, List<ArchImagen> imagenes) {
+    public ResultadoDTO(String nombre, TipoExp tipo, Date fecha, List<ArchImagenDTO> imagenes) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.fecha = fecha;
@@ -52,7 +52,7 @@ public class ResultadoDTO {
         return fecha;
     }
 
-    public List<ArchImagen> getImagenes() {
+    public List<ArchImagenDTO> getImagenes() {
         return imagenes;
     }
 
@@ -69,7 +69,7 @@ public class ResultadoDTO {
         this.fecha = fecha;
     }
 
-    public void setImagenes(List<ArchImagen> imagenes) {
+    public void setImagenes(List<ArchImagenDTO> imagenes) {
         this.imagenes = imagenes;
     }
 }

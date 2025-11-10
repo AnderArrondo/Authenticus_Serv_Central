@@ -1,0 +1,84 @@
+package es.deusto.sd.authenticus_serv_central.dto;
+
+import java.util.Objects;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public class ArchImagenDTO {
+    @Schema(name="nombre", example="prueba1.jpg")
+    private String nombre;
+    @Schema(name="path", example="C:/caso_styles/pruebas")
+    private String path;
+    @Schema(name = "pVeracidad", example="-1")
+    private double pVeracidad;
+    @Schema(name = "pIntegridad", example="0.89")
+    private double pIntegridad;
+
+    public ArchImagenDTO(String nombre, String path) {
+        this.nombre = nombre;
+        this.path = path;
+        this.pVeracidad = -1.0;
+        this.pIntegridad = -1.0;
+    }
+
+    public ArchImagenDTO(String absPath) {
+        String[] parts = absPath.split("/");
+        this.nombre = parts[parts.length - 1];
+        this.path = absPath.substring(0, absPath.lastIndexOf("/"));
+        this.pVeracidad = -1.0;
+        this.pIntegridad = -1.0;
+    }
+
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+
+        public double getpIntegridad() {
+        return pIntegridad;
+    }
+
+    public void setpIntegridad(double pIntegridad) {
+        this.pIntegridad = pIntegridad;
+    }
+
+    public double getpVeracidad() {
+        return pVeracidad;
+    }
+
+    public void setpVeracidad(double pVeracidad) {
+        this.pVeracidad = pVeracidad;
+    }
+
+    @Override
+    public String toString() {
+        return this.path + "/" + this.nombre;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof ArchImagenDTO)) return false;
+        ArchImagenDTO other = (ArchImagenDTO) obj;
+        return this.nombre.toUpperCase().equals(other.nombre.toUpperCase()) && path.toUpperCase().equals(other.path.toUpperCase());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.nombre, this.path);
+    }
+}
