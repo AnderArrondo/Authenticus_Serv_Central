@@ -5,17 +5,24 @@ import java.util.Objects;
 public class ArchImagen {
     private String nombre;
     private String path;
+    private double pVeracidad;
+    private double pIntegridad;
 
     public ArchImagen(String nombre, String path) {
         this.nombre = nombre;
         this.path = path;
+        this.pVeracidad = 0.0;
+        this.pIntegridad = 0.0;
     }
 
     public ArchImagen(String absPath) {
         String[] parts = absPath.split("/");
         this.nombre = parts[parts.length - 1];
         this.path = absPath.substring(0, absPath.lastIndexOf("/"));
+        this.pVeracidad = 0.0;
+        this.pIntegridad = 0.0;
     }
+
 
     public String getNombre() {
         return nombre;
@@ -25,12 +32,30 @@ public class ArchImagen {
         this.nombre = nombre;
     }
 
+
     public String getPath() {
         return path;
     }
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+
+        public double getpIntegridad() {
+        return pIntegridad;
+    }
+
+    public void setpIntegridad(double pIntegridad) {
+        this.pIntegridad = pIntegridad;
+    }
+
+    public double getpVeracidad() {
+        return pVeracidad;
+    }
+
+    public void setpVeracidad(double pVeracidad) {
+        this.pVeracidad = pVeracidad;
     }
 
     @Override
