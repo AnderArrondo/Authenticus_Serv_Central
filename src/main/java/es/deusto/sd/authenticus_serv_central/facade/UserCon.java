@@ -32,7 +32,7 @@ public class UserCon {
         this.userServ = userServ;
     }
 
-
+    @PostMapping("/signup")
     @Operation(
         summary = "Registro de un nuevo usuario (Sign Up)",
         description = "Crea un nuevo usuario en el sistema a partir de los datos proporcionados (email, contraseña, nombre, teléfono).",
@@ -60,7 +60,6 @@ public class UserCon {
                 example = "La contraseña no es válida (debe tener al menos 8 caracteres)."
             )
         ))
-    @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody UserDTO userDTO) {
         try {
             UserDTO createdUser = userServ.crearUsuario(userDTO);
@@ -77,7 +76,6 @@ public class UserCon {
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Datos de inicio de sesión en formato de LoginRequestDTO.", required = true
         ))
-               
     @ApiResponse(responseCode = "200", 
                 description = "Login exitoso, devuelve el token de autenticación.",
                 content = @Content(
