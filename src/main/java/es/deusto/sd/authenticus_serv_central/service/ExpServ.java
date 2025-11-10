@@ -45,6 +45,9 @@ public class ExpServ {
         if(existeExpediente(exped, usuario)) {
             throw new IllegalArgumentException("El expediente ya existe.");
         }
+        if(StateManagement.usuarioExpediente.get(usuario) == null) {
+            StateManagement.usuarioExpediente.put(usuario, new ArrayList<>());
+        }
         StateManagement.usuarioExpediente.get(usuario).add(exped);
 
         return toDTO(exped);
