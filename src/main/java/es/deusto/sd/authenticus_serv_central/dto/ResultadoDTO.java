@@ -26,7 +26,7 @@ public class ResultadoDTO {
     ),
     schema = @Schema(
         description = "Ruta absoluta de la imagen.",
-        implementation = ArchImagen.class,
+        implementation = ArchImagenDTO.class,
         requiredMode = Schema.RequiredMode.REQUIRED
     )
 )

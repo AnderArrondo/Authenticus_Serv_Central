@@ -3,15 +3,16 @@ package es.deusto.sd.authenticus_serv_central.dto;
 import java.util.Objects;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class ArchImagenDTO {
-    @Schema(name="nombre", example="prueba1.jpg")
+    @Schema(name="nombre", example="prueba1.jpg", requiredMode = RequiredMode.REQUIRED)
     private String nombre;
-    @Schema(name="path", example="C:/caso_styles/pruebas")
+    @Schema(name="path", example="C:/caso_styles/pruebas", requiredMode = RequiredMode.REQUIRED)
     private String path;
-    @Schema(name = "pVeracidad", example="-1")
+    @Schema(name = "pVeracidad", example="-1", requiredMode = RequiredMode.NOT_REQUIRED)
     private double pVeracidad;
-    @Schema(name = "pIntegridad", example="0.89")
+    @Schema(name = "pIntegridad", example="0.89", requiredMode = RequiredMode.NOT_REQUIRED)
     private double pIntegridad;
 
     public ArchImagenDTO(String nombre, String path) {
