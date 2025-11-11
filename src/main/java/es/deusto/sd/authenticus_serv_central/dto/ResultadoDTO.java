@@ -1,49 +1,75 @@
 package es.deusto.sd.authenticus_serv_central.dto;
 
+import java.util.Date;
+import java.util.List;
+
+import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
+import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
 public class ResultadoDTO {
-    @Schema(name="Expediente", description="DTO del expediente original.", requiredMode = RequiredMode.REQUIRED)
-    private ExpedDTO expediente;
-    @Schema(name="Puntuación de integridad", description="Puntuación media de la integridad de las imagenes relativas al caso. Entre [0, 1] si se ha procesado, sino -1.", requiredMode = RequiredMode.REQUIRED)
-    private double puntuacionIntegridad;
-    @Schema(name="Puntuación de veracidad", description="Puntuación media de la veracidad de las imagenes relativas al caso. Entre [0, 1] si se ha procesado, sino -1.", requiredMode = RequiredMode.REQUIRED)
-    private double puntuacionVeracidad;
+    @Schema(name="nombre", description="El nombre del expediente del que provienen los resultados.", example="Caso Styles", requiredMode=Schema.RequiredMode.REQUIRED)
+    private String nombre;
 
-    public ResultadoDTO(ExpedDTO expediente) {
-        this.expediente = expediente;
-        this.puntuacionIntegridad = -1;
-        this.puntuacionVeracidad = -1;
+    @Schema(name="tipo", description="El tipo de expediente", example = "AMBAS", 
+        allowableValues = {"INTEGRIDAD", "VERACIDAD", "AMBAS"}, requiredMode=Schema.RequiredMode.REQUIRED)
+    private TipoExp tipo;
+
+    @Schema(name="fecha", description="Fecha del expediente en formato <i>dd/MM/yyyy</id>.", example="15/01/2024", requiredMode=Schema.RequiredMode.REQUIRED)
+    private Date fecha;
+
+    @ArraySchema(
+    arraySchema = @Schema(
+        description = "Lista de imágenes asociadas al expediente con sus respectivos resultados de procesamiento..",
+        requiredMode = Schema.RequiredMode.REQUIRED
+    ),
+    schema = @Schema(
+        description = "Ruta absoluta de la imagen.",
+        implementation = ArchImagenDTO.class,
+        requiredMode = Schema.RequiredMode.REQUIRED
+    )
+)
+    private List<ArchImagenDTO> imagenes;
+
+    public ResultadoDTO(String nombre, TipoExp tipo, Date fecha, List<ArchImagenDTO> imagenes) {
+        this.nombre = nombre;
+        this.tipo = tipo;
+        this.fecha = fecha;
+        this.imagenes = imagenes;
     }
 
-    public ResultadoDTO(ExpedDTO expediente, double puntuacionIntegridad, double puntuacionVeracidad) {
-        this.expediente = expediente;
-        this.puntuacionIntegridad = puntuacionIntegridad;
-        this.puntuacionVeracidad = puntuacionVeracidad;
+
+    public String getNombre() {
+        return nombre;
     }
 
-    public ExpedDTO getExpediente() {
-        return expediente;
+    public TipoExp getTipo() {
+        return tipo;
     }
 
-    public double getPuntuacionIntegridad() {
-        return puntuacionIntegridad;
+    public Date getFecha() {
+        return fecha;
     }
 
-    public double getPuntuacionVeracidad() {
-        return puntuacionVeracidad;
+    public List<ArchImagenDTO> getImagenes() {
+        return imagenes;
     }
 
-    public void setExpediente(ExpedDTO expediente) {
-        this.expediente = expediente;
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public void setPuntuacionIntegridad(double puntuacionIntegridad) {
-        this.puntuacionIntegridad = puntuacionIntegridad;
+    public void setTipo(TipoExp tipo) {
+        this.tipo = tipo;
     }
 
-    public void setPuntuacionVeracidad(double puntuacionVeracidad) {
-        this.puntuacionVeracidad = puntuacionVeracidad;
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public void setImagenes(List<ArchImagenDTO> imagenes) {
+        this.imagenes = imagenes;
     }
 }

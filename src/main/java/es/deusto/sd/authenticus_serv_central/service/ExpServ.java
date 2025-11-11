@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import es.deusto.sd.authenticus_serv_central.dto.ArchImagenDTO;
 import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
@@ -181,29 +182,27 @@ public class ExpServ {
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("Caso no encontrado."));
 
-        double integridadTotal = -1;
-        double veracidadTotal = -1;
-
         TipoExp tipoCaso = caso.getTipo();
         List<ArchImagen> listaImagenes = caso.getImagenes();
 
-        if(tipoCaso == TipoExp.INTEGRIDAD || tipoCaso == TipoExp.AMBAS) {
-            integridadTotal = 0;
-            for(ArchImagen img : listaImagenes) {
-                integridadTotal += obtenerPuntuacionIntegridad(img);
+        for(ArchImagen img : listaImagenes) {
+            if(tipoCaso == TipoExp.VERACIDAD || tipoCaso == TipoExp.AMBAS) {
+                img.setpVeracidad(obtenerPuntuacionVeracidad(img));
             }
-            integridadTotal /= listaImagenes.size();
+            if(tipoCaso == TipoExp.INTEGRIDAD || tipoCaso == TipoExp.AMBAS) {
+                img.setpIntegridad(obtenerPuntuacionIntegridad(img));
+            }
         }
 
-        if(tipoCaso == TipoExp.VERACIDAD || tipoCaso == TipoExp.AMBAS) {
-            veracidadTotal = 0;
-            for(ArchImagen img : listaImagenes) {
-                veracidadTotal += obtenerPuntuacionVeracidad(img);
-            }
-            veracidadTotal /= listaImagenes.size();
+        return new ResultadoDTO(caso.getNombre(), caso.getTipo(), caso.getFecha(), archImagenesToDTO(listaImagenes));
+    }
+
+    private List<ArchImagenDTO> archImagenesToDTO(List<ArchImagen> imagenes) {
+        List<ArchImagenDTO> imagenesDTO = new ArrayList<>();
+        for(ArchImagen img : imagenes) {
+            imagenesDTO.add(new ArchImagenDTO(img.getNombre(), img.getPath()));
         }
-        
-        return new ResultadoDTO(toDTO(caso), integridadTotal, veracidadTotal);
+        return imagenesDTO;
     }
 
     // se consideran dos funciones de obtener puntuacion (una por cada tipo)

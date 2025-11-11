@@ -1,13 +1,9 @@
 package es.deusto.sd.authenticus_serv_central.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 
-@Entity
 public class UserDTO {
     
-    @Id
     @Schema(name="email", description="Email del usuario, es el atributo que identifica a un usuario.", example="ramon@gmail.com", requiredMode=Schema.RequiredMode.REQUIRED)
     private String email;
     @Schema(name="contrasena", description="Contraseña del usuario, debe contener al menos 8 caracteres.", example="12345678", requiredMode=Schema.RequiredMode.REQUIRED)

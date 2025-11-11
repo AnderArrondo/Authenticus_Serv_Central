@@ -1,22 +1,28 @@
-package es.deusto.sd.authenticus_serv_central.entity;
+package es.deusto.sd.authenticus_serv_central.dto;
 
 import java.util.Objects;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
-public class ArchImagen {
+public class ArchImagenDTO {
+    @Schema(name="nombre", example="prueba1.jpg", requiredMode = RequiredMode.REQUIRED)
     private String nombre;
+    @Schema(name="path", example="C:/caso_styles/pruebas", requiredMode = RequiredMode.REQUIRED)
     private String path;
+    @Schema(name = "pVeracidad", example="-1", requiredMode = RequiredMode.NOT_REQUIRED)
     private double pVeracidad;
+    @Schema(name = "pIntegridad", example="0.89", requiredMode = RequiredMode.NOT_REQUIRED)
     private double pIntegridad;
 
-    public ArchImagen(String nombre, String path) {
+    public ArchImagenDTO(String nombre, String path) {
         this.nombre = nombre;
         this.path = path;
         this.pVeracidad = -1.0;
         this.pIntegridad = -1.0;
     }
 
-    public ArchImagen(String absPath) {
+    public ArchImagenDTO(String absPath) {
         String[] parts = absPath.split("/");
         this.nombre = parts[parts.length - 1];
         this.path = absPath.substring(0, absPath.lastIndexOf("/"));
@@ -67,8 +73,8 @@ public class ArchImagen {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof ArchImagen)) return false;
-        ArchImagen other = (ArchImagen) obj;
+        if (!(obj instanceof ArchImagenDTO)) return false;
+        ArchImagenDTO other = (ArchImagenDTO) obj;
         return this.nombre.toUpperCase().equals(other.nombre.toUpperCase()) && path.toUpperCase().equals(other.path.toUpperCase());
     }
 
