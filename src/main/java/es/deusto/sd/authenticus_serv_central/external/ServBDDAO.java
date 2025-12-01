@@ -5,9 +5,10 @@ import java.net.http.HttpClient;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ServProcGateway implements IServProcGateway{
+public class ServBDDAO implements IServBDDAO{
     private final String API_URL = "http://localhost:8081/";
 
     //private final HttpClient httpClient;
+
 
 }

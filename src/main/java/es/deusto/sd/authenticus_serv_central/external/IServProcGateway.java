@@ -1,5 +1,5 @@
 package es.deusto.sd.authenticus_serv_central.external;
 
-public class IServProcGateway {
+public interface IServProcGateway {
     
 }
