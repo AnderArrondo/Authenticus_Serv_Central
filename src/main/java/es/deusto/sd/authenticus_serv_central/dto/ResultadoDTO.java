@@ -3,7 +3,6 @@ package es.deusto.sd.authenticus_serv_central.dto;
 import java.util.Date;
 import java.util.List;
 
-import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
