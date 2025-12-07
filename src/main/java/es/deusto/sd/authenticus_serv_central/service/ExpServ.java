@@ -17,6 +17,7 @@ import es.deusto.sd.authenticus_serv_central.entity.Exped;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 import es.deusto.sd.authenticus_serv_central.dto.ResultadoDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
+import es.deusto.sd.authenticus_serv_central.gateways.SocketProcesaClient;
 
 @Service
 public class ExpServ {
@@ -184,35 +185,16 @@ public class ExpServ {
 
         TipoExp tipoCaso = caso.getTipo();
         List<ArchImagen> listaImagenes = caso.getImagenes();
+        List<ArchImagenDTO> imagenesResultado = new ArrayList<>();
+
+        SocketProcesaClient clientSocket = new SocketProcesaClient("localhost", 8081);
 
         for(ArchImagen img : listaImagenes) {
-            if(tipoCaso == TipoExp.VERACIDAD || tipoCaso == TipoExp.AMBAS) {
-                img.setpVeracidad(obtenerPuntuacionVeracidad(img));
-            }
-            if(tipoCaso == TipoExp.INTEGRIDAD || tipoCaso == TipoExp.AMBAS) {
-                img.setpIntegridad(obtenerPuntuacionIntegridad(img));
-            }
+            ArchImagenDTO resultDTO = clientSocket.enviarRequestProcesa(img, tipoCaso);
+            imagenesResultado.add(resultDTO);
         }
 
-        return new ResultadoDTO(caso.getNombre(), caso.getTipo(), caso.getFecha(), archImagenesToDTO(listaImagenes));
-    }
-
-    private List<ArchImagenDTO> archImagenesToDTO(List<ArchImagen> imagenes) {
-        List<ArchImagenDTO> imagenesDTO = new ArrayList<>();
-        for(ArchImagen img : imagenes) {
-            imagenesDTO.add(new ArchImagenDTO(img.getNombre(), img.getPath()));
-        }
-        return imagenesDTO;
-    }
-
-    // se consideran dos funciones de obtener puntuacion (una por cada tipo)
-    // porque aunque hagan lo mismo en una caso realista las dos funciones serian distitas
-    private double obtenerPuntuacionVeracidad(ArchImagen img) {
-        return Math.random();
-    }
-
-    private double obtenerPuntuacionIntegridad(ArchImagen img) {
-        return Math.random();
+        return new ResultadoDTO(caso.getNombre(), caso.getTipo(), caso.getFecha(), imagenesResultado);
     }
 
     public void ainadirArchivosAdicionales(String nombreCaso, String token, List<String> archivos)throws Exception{
