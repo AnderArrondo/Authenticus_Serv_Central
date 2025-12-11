@@ -5,12 +5,21 @@ import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginRequestDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
+import es.deusto.sd.authenticus_serv_central.external.IServBDDAO;
+
 
 import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
 public class UserServ {
+
+    private final IServBDDAO servBDDAO;
+
+    // Implementar el DAO de BBDD
+    public UserServ(IServBDDAO servBDDAO) {
+        this.servBDDAO = servBDDAO;
+    }
 
     
     /**
@@ -92,7 +101,30 @@ public class UserServ {
         StateManagement.usuarioExpediente.remove(user);
         StateManagement.tokenUsuario.remove(token);
     }
-}
+
      
 
+    public void removeUserAndAllData(String token) throws Exception {
+        if (!StateManagement.isActiveToken(token)) {
+            throw new IllegalArgumentException("Token no válido o sesión ya cerrada.");
+        }
 
+        User user = StateManagement.tokenUsuario.get(token);
+        if (user == null) {
+            throw new IllegalArgumentException("Sesión inválida.");
+        }
+
+        String email = user.getEmail();
+
+        servBDDAO.deleteUserAndCases(email);
+
+        StateManagement.tokenUsuario.entrySet()
+            .removeIf(e -> email.equalsIgnoreCase(e.getValue().getEmail()));
+
+        
+        StateManagement.usuarioExpediente.remove(user);
+
+        
+        StateManagement.usuarios.remove(email);
+    }
+}

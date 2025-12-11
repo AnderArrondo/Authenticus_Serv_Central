@@ -17,12 +17,18 @@ import es.deusto.sd.authenticus_serv_central.entity.Exped;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 import es.deusto.sd.authenticus_serv_central.dto.ResultadoDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
+import es.deusto.sd.authenticus_serv_central.external.IServBDDAO;
 
 @Service
 public class ExpServ {
     private SimpleDateFormat dtFormatter = new SimpleDateFormat("dd/MM/yyyy");
-
+    private final IServBDDAO expedGateway;
+    /*/
     public ExpServ() {
+    }
+    /*/
+    public ExpServ(IServBDDAO expedGateway) {
+        this.expedGateway = expedGateway;
     }
 
     public ExpedDTO crearExpediente(ExpedDTO expedDTO, String token) throws IllegalArgumentException, ParseException {
@@ -231,4 +237,15 @@ public class ExpServ {
             throw new Exception("No ha iniciado sesión");
         }
     }
+
+    public ExpedDTO saveExped(ExpedDTO expedDTO) throws Exception{
+        Optional<ExpedDTO> expediente = expedGateway.saveExped(expedDTO);
+        if(expediente.isPresent()){
+            return expediente.get();
+        }
+        else{
+            throw new Exception("No se ha podido guardar el expediente.");
+        }
+    }
+
 }
