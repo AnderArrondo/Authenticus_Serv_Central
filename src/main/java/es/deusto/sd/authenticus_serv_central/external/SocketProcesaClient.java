@@ -1,4 +1,4 @@
-package es.deusto.sd.authenticus_serv_central.gateways;
+package es.deusto.sd.authenticus_serv_central.external;
 
 import java.io.EOFException;
 import java.io.IOException;
