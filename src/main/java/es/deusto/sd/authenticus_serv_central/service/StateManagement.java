@@ -26,6 +26,7 @@ public class StateManagement {
     BDGateway bdGateway = new BDGateway();
 
     static {
+        // TODO: leer datos de BD
         // Optional<List<UserDTO>> maybeUsers = new BDGateway().getAllUsers();
         // maybeUsers.ifPresent(userDTOs -> {
         //     for (UserDTO userDTO : userDTOs) {

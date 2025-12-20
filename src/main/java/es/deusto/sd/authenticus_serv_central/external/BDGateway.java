@@ -6,11 +6,14 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 
+@Service
 public class BDGateway {
     private final String bdServiceURL = "http://localhost:8082/";
     private final HttpClient httpClient;
@@ -89,7 +92,7 @@ public class BDGateway {
             String expedDTOJson = mapper.writeValueAsString(expedDTO);
 
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(java.net.URI.create(bdServiceURL).resolve("expeds/save/" + userEmail))
+                .uri(java.net.URI.create(bdServiceURL).resolve("exped/create/" + userEmail))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(expedDTOJson))
                 .build();
@@ -105,6 +108,22 @@ public class BDGateway {
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();
+        }
+    }
+
+    public boolean deleteExped(String nombreCaso, String userEmail) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(java.net.URI.create(bdServiceURL).resolve("exped/delete/" + userEmail + "/" + nombreCaso))
+                .DELETE()
+                .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return response.statusCode() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

@@ -175,7 +175,7 @@ public class ExpServ {
         }
         User usuario = StateManagement.tokenUsuario.get(token);
         List<Exped> listaExpedientes = StateManagement.usuarioExpediente.get(usuario);
-        
+        bdGateway.deleteExped(nombreCaso, usuario.getEmail());
         return listaExpedientes.removeIf(exped -> exped.getNombre().toUpperCase().equals(nombreCaso.toUpperCase()));
     }
     
