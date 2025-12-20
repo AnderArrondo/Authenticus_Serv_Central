@@ -3,11 +3,14 @@ package es.deusto.sd.authenticus_serv_central.gateways;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 
 public class BDGateway {
@@ -80,6 +83,30 @@ public class BDGateway {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public List<ExpedDTO> listarExpedientes(String email) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(java.net.URI.create(bdServiceURL).resolve("exped/list/" + email))
+                .GET()
+                .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(response.body(), new TypeReference<List<ExpedDTO>>() {}
+                );
+            }
+            else{
+                throw new RuntimeException("Error HTTP: " + response.statusCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
         }
     }
 }
