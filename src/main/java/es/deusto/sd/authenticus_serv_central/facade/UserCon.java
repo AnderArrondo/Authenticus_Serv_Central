@@ -19,7 +19,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
@@ -35,7 +34,7 @@ public class UserCon {
     @PostMapping("/signup")
     @Operation(
         summary = "Registro de un nuevo usuario (Sign Up)",
-        description = "Crea un nuevo usuario en el sistema a partir de los datos proporcionados (email, contraseña, nombre, teléfono).",
+        description = "Crea un nuevo usuario en el sistema a partir de los datos proporcionados (email, contraseña, nombre, teléfono). No es necesario que la sesión esté activa.",
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Los datos del usuario en el formato de UserDTO.", required=true
         ))
@@ -43,16 +42,15 @@ public class UserCon {
         content = @Content(
             mediaType = "application/json",
             schema = @Schema(
-                implementation = UserDTO.class,
-                example = "{\n" +
-                    "\"email\": user1@gmail.com,\n" +
-                    "\"contrasena\": 12345678" +
-                    "\"nombre\": User One" +
-                    "\"telefono\": 123456789" +
-                    "}"
+                example = "{\r\n" + //
+                                        "  \"email\": \"user@gmail.com\",\r\n" + //
+                                        "  \"contrasena\": \"null\",\r\n" + //
+                                        "  \"nombre\": \"User\",\r\n" + //
+                                        "  \"telefono\": \"123456789\"\r\n" + //
+                                        "}"
             )
         ))
-    @ApiResponse(responseCode = "400", description = "Error de validación (ej. email ya registrado, contraseña no válida).",
+    @ApiResponse(responseCode = "400", description = "Error de validación (ej. email ya registrado, contraseña no válida). Devuelve un mensaje descriptivo del problema encontrado.",
         content = @Content(
             mediaType = "text/plain",
             schema = @Schema(
@@ -69,13 +67,13 @@ public class UserCon {
         }
     }
 
-    @GetMapping("/login") 
+    @PostMapping("/login") 
     @Operation(
-        summary = "Login de usuario",
-        description = "Inicia sesión y devuelve un token de autenticación.",
-        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Datos de inicio de sesión en formato de LoginRequestDTO.", required = true
-        ))
+    summary = "Login de usuario.",
+    description = "Inicia sesión y devuelve un token de autenticación.",
+    requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "Datos de inicio de sesión en formato de LoginRequestDTO.", required=true
+    ))
     @ApiResponse(responseCode = "200", 
                 description = "Login exitoso, devuelve el token de autenticación.",
                 content = @Content(
@@ -88,7 +86,7 @@ public class UserCon {
                     )
                 ))
     @ApiResponse(responseCode = "400", 
-                description = "Datos inválidos para iniciar sesión.",
+                description = "Datos inválidos para iniciar sesión. Devuelve un mensaje descriptivo del problema encontrado.",
                 content = @Content(
                     mediaType = "text/plain",
                     schema = @Schema(
@@ -97,9 +95,9 @@ public class UserCon {
                     )
                 )
     )
-    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginDTO) { 
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO) { 
         try { 
-            LoginResponseDTO response = userServ.login(loginDTO); 
+            LoginResponseDTO response = userServ.login(loginRequestDTO); 
             return ResponseEntity.ok(response); 
         } catch (Exception e) { 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); 
@@ -107,19 +105,17 @@ public class UserCon {
     }   
 
     @Operation(summary = "Cierre de sesión (Logout)",
-               description = "Invalida un token de sesión activo para cerrar la sesión del usuario.",
-               parameters = {
-                    @Parameter(name = "token", description = "Token de sesión del usuario.")
-               })
-    @ApiResponse(responseCode = "200", description = "Logout exitoso.",
+               description = "Invalida un token de sesión activo para cerrar la sesión del usuario. La sesión ha de estar iniciada.")
+    @ApiResponse(responseCode = "200", description = "Logout exitoso. Devuelve un mensaje de confirmación.",
         content = @Content(
             mediaType = "text/plain",
             schema = @Schema(
                 type="String",
-                example = "\"Logout exitoso.\""
+                example = "Logout exitoso."
             )
         ))
-    @ApiResponse(responseCode = "400", description = "Token no válido o sesión ya cerrada.",
+    @ApiResponse(responseCode = "400",
+        description = "Token no válido o sesión ya cerrada. Devuelve un mensaje descriptivo del problema encontrado.",
         content = @Content(
             mediaType = "text/plain",
             schema = @Schema(
@@ -129,7 +125,10 @@ public class UserCon {
         ))
     
     @PutMapping("/logout/{token}")
-    public ResponseEntity<?> logout(@PathVariable String token) { 
+    public ResponseEntity<?> logout(
+        @Parameter(name = "token", description = "Token de sesión del usuario. Debe estar activo.")
+        @PathVariable String token
+    ) { 
         try {
             userServ.logout(token);
             return ResponseEntity.ok().body("Logout exitoso.");
@@ -140,14 +139,11 @@ public class UserCon {
 
     @DeleteMapping("/remove/{token}")
 
-    @Operation(summary = "Eliminar usuario", 
-                description = "Elimina el usuario asociado al token de sesión proporcionado.",
-                parameters = {
-                    @Parameter(name="token", description = "Token de sesión del usuario.")
-                })
+    @Operation(summary = "Eliminar un usuario existente.", 
+                description = "Elimina el usuario asociado al token de sesión proporcionado. Debe tener la sesión iniciada.")
 
     @ApiResponse(responseCode = "200", 
-                description = "Usuario eliminado correctamente.",
+                description = "Usuario eliminado correctamente. Devuelve un mensaje de confirmación.",
                 content = @Content(
                     mediaType = "text/plain",
                     schema = @Schema(
@@ -156,7 +152,7 @@ public class UserCon {
                     )
                 ))
     @ApiResponse(responseCode = "400",
-                description = "Datos inválidos para eliminar usuario.",
+                description = "Datos inválidos para eliminar usuario. Devuelve un mensaje descriptivo del problema encontrado.",
                 content = @Content(
                     mediaType = "text/plain",
                     schema = @Schema(
@@ -164,8 +160,11 @@ public class UserCon {
                         example = "Token no válido o sesión ya cerrada."
                     )
                 ))
-    public ResponseEntity<?> remove(@PathVariable String token) { 
-        String extractedToken = token; 
+    public ResponseEntity<?> remove(
+        @Parameter(name="token", description = "Token de sesión del usuario. Debe estar activo.")
+        @PathVariable("token") String token
+    ) { 
+        String extractedToken = token;
        
         try { 
             userServ.removeUser(extractedToken); 

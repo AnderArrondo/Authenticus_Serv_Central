@@ -5,11 +5,23 @@ import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginRequestDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
+import es.deusto.sd.authenticus_serv_central.gateways.BDGateway;
+import es.deusto.sd.authenticus_serv_central.external.IServBDDAO;
 
+
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
 public class UserServ {
+
+    private final BDGateway bdGateway = new BDGateway();
+    private final IServBDDAO servBDDAO;
+
+    // Implementar el DAO de BBDD
+    public UserServ(IServBDDAO servBDDAO) {
+        this.servBDDAO = servBDDAO;
+    }
 
     
     /**
@@ -34,12 +46,11 @@ public class UserServ {
             userDTO.getTelefono()
         );
 
-        StateManagement.usuarios.put(newUser.getEmail(), newUser);        
+        StateManagement.usuarios.put(newUser.getEmail(), newUser); 
+        StateManagement.usuarioExpediente.put(newUser, new ArrayList<>());
         
-        System.out.println("SIMULACIÓN: Creando y 'guardando' usuario...");
-        System.out.println(" - Email: " + newUser.getEmail());
-        System.out.println(" - Usuarios 'en BBDD' ahora: " + StateManagement.usuarios.size());
-        
+        bdGateway.saveUser(userDTO);
+
         // Por seguridad, nunca devolvemos la contraseña al cliente.
         userDTO.setContrasena(null); 
         
@@ -53,6 +64,13 @@ public class UserServ {
         if (user == null || !user.getContrasena().equals(loginDTO.getContrasena())) {
             throw new IllegalArgumentException("Email o contraseña incorrectos."); 
         }
+
+        for (User u : StateManagement.tokenUsuario.values()) {
+            if (u.getEmail().toUpperCase().equals(loginDTO.getEmail().toUpperCase())) {
+                throw new IllegalArgumentException("Este usuario ya ha iniciado sesión.");
+            }
+        }
+
         String token = UUID.randomUUID().toString();
         StateManagement.tokenUsuario.put(token, user); 
         return new LoginResponseDTO(token); } 
@@ -86,14 +104,37 @@ public class UserServ {
         if (!StateManagement.isActiveToken(token)) { 
             throw new IllegalArgumentException("Token no válido o sesión ya cerrada."); 
         }
-        
         User user = StateManagement.tokenUsuario.get(token); 
         StateManagement.usuarios.remove(user.getEmail());
+        bdGateway.deleteUser(user.getEmail());
 
         StateManagement.usuarioExpediente.remove(user);
         StateManagement.tokenUsuario.remove(token);
     }
-}
+
      
 
+    public void removeUserAndAllData(String token) throws Exception {
+        if (!StateManagement.isActiveToken(token)) {
+            throw new IllegalArgumentException("Token no válido o sesión ya cerrada.");
+        }
 
+        User user = StateManagement.tokenUsuario.get(token);
+        if (user == null) {
+            throw new IllegalArgumentException("Sesión inválida.");
+        }
+
+        String email = user.getEmail();
+
+        servBDDAO.deleteUserAndCases(email);
+
+        StateManagement.tokenUsuario.entrySet()
+            .removeIf(e -> email.equalsIgnoreCase(e.getValue().getEmail()));
+
+        
+        StateManagement.usuarioExpediente.remove(user);
+
+        
+        StateManagement.usuarios.remove(email);
+    }
+}

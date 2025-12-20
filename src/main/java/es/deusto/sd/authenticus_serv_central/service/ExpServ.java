@@ -10,18 +10,26 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import es.deusto.sd.authenticus_serv_central.dto.ArchImagenDTO;
 import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 import es.deusto.sd.authenticus_serv_central.dto.ResultadoDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
+import es.deusto.sd.authenticus_serv_central.gateways.SocketProcesaClient;
+import es.deusto.sd.authenticus_serv_central.external.IServBDDAO;
 
 @Service
 public class ExpServ {
     private SimpleDateFormat dtFormatter = new SimpleDateFormat("dd/MM/yyyy");
-
+    private final IServBDDAO expedGateway;
+    /*/
     public ExpServ() {
+    }
+    /*/
+    public ExpServ(IServBDDAO expedGateway) {
+        this.expedGateway = expedGateway;
     }
 
     public ExpedDTO crearExpediente(ExpedDTO expedDTO, String token) throws IllegalArgumentException, ParseException {
@@ -45,6 +53,7 @@ public class ExpServ {
         if(existeExpediente(exped, usuario)) {
             throw new IllegalArgumentException("El expediente ya existe.");
         }
+
         StateManagement.usuarioExpediente.get(usuario).add(exped);
 
         return toDTO(exped);
@@ -180,39 +189,18 @@ public class ExpServ {
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("Caso no encontrado."));
 
-        double integridadTotal = -1;
-        double veracidadTotal = -1;
-
         TipoExp tipoCaso = caso.getTipo();
         List<ArchImagen> listaImagenes = caso.getImagenes();
+        List<ArchImagenDTO> imagenesResultado = new ArrayList<>();
 
-        if(tipoCaso == TipoExp.INTEGRIDAD || tipoCaso == TipoExp.AMBAS) {
-            integridadTotal = 0;
-            for(ArchImagen img : listaImagenes) {
-                integridadTotal += obtenerPuntuacionIntegridad(img);
-            }
-            integridadTotal /= listaImagenes.size();
+        SocketProcesaClient clientSocket = new SocketProcesaClient("localhost", 8081);
+
+        for(ArchImagen img : listaImagenes) {
+            ArchImagenDTO resultDTO = clientSocket.enviarRequestProcesa(img, tipoCaso);
+            imagenesResultado.add(resultDTO);
         }
 
-        if(tipoCaso == TipoExp.VERACIDAD || tipoCaso == TipoExp.AMBAS) {
-            veracidadTotal = 0;
-            for(ArchImagen img : listaImagenes) {
-                veracidadTotal += obtenerPuntuacionVeracidad(img);
-            }
-            veracidadTotal /= listaImagenes.size();
-        }
-        
-        return new ResultadoDTO(toDTO(caso), integridadTotal, veracidadTotal);
-    }
-
-    // se consideran dos funciones de obtener puntuacion (una por cada tipo)
-    // porque aunque hagan lo mismo en una caso realista las dos funciones serian distitas
-    private double obtenerPuntuacionVeracidad(ArchImagen img) {
-        return Math.random();
-    }
-
-    private double obtenerPuntuacionIntegridad(ArchImagen img) {
-        return Math.random();
+        return new ResultadoDTO(caso.getNombre(), caso.getTipo(), caso.getFecha(), imagenesResultado);
     }
 
     public void ainadirArchivosAdicionales(String nombreCaso, String token, List<String> archivos)throws Exception{
@@ -231,4 +219,15 @@ public class ExpServ {
             throw new Exception("No ha iniciado sesión");
         }
     }
+
+    public ExpedDTO saveExped(ExpedDTO expedDTO) throws Exception{
+        Optional<ExpedDTO> expediente = expedGateway.saveExped(expedDTO);
+        if(expediente.isPresent()){
+            return expediente.get();
+        }
+        else{
+            throw new Exception("No se ha podido guardar el expediente.");
+        }
+    }
+
 }

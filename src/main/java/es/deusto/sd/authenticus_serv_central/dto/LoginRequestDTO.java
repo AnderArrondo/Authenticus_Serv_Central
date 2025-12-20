@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 
 public class LoginRequestDTO {
-    @Schema(name="Email", description="Email del usuario", example="ramon@gmail.com", requiredMode=Schema.RequiredMode.REQUIRED)
+    @Schema(name="email", description="Email del usuario", example="ramon@gmail.com", requiredMode=Schema.RequiredMode.REQUIRED)
     private String email;
-    @Schema(name="Contraseña", description="Contraseña del usuario", example="123", requiredMode=Schema.RequiredMode.REQUIRED)
+    @Schema(name="contrasena", description="Contraseña del usuario", example="password123", requiredMode=Schema.RequiredMode.REQUIRED)
     private String contrasena;
 
     // Constructor vacío (necesario para Spring)

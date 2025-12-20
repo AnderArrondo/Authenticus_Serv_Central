@@ -6,15 +6,15 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ExpedDTO {
-    @Schema(name="Nombre", description="El nombre del expediente es único para cada expediente de un mismo usuario.", example="Expediente1", requiredMode=Schema.RequiredMode.REQUIRED)
+    @Schema(name="nombre", description="El nombre del expediente es único para cada expediente de un mismo usuario.", example="Expediente1", requiredMode=Schema.RequiredMode.REQUIRED)
     private String nombre;
 
-    @Schema(name="Tipo", description="El tipo de expediente es convertido a mayúsculas para la conversión, " +
+    @Schema(name="tipo", description="El tipo de expediente es convertido a mayúsculas para la conversión, " +
         "por lo que cualquier combinación de mayúsculas y minúsculas es válida dentro de los valores permitidos.",
         allowableValues = {"INTEGRIDAD", "VERACIDAD", "AMBAS"}, requiredMode=Schema.RequiredMode.REQUIRED)
     private String tipo;
 
-    @Schema(name="Fecha", description="Fec  ha del expediente en formato <i>dd/MM/yyyy</id>.", example="25/12/2023", requiredMode=Schema.RequiredMode.REQUIRED)
+    @Schema(name="fecha", description="Fecha del expediente en formato <i>dd/MM/yyyy</id>.", example="25/12/2023", requiredMode=Schema.RequiredMode.REQUIRED)
     private String fecha;
 
     @ArraySchema(
