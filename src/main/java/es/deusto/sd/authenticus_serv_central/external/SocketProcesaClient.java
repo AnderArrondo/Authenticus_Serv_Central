@@ -2,14 +2,10 @@ package es.deusto.sd.authenticus_serv_central.gateways;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import es.deusto.sd.authenticus_serv_central.dto.ArchImagenDTO;
 import es.deusto.sd.authenticus_serv_central.dto.RequestProcesaDTO;
