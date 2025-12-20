@@ -5,6 +5,7 @@ import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginRequestDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
+import es.deusto.sd.authenticus_serv_central.gateways.BDGateway;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @Service
 public class UserServ {
 
+    private final BDGateway bdGateway = new BDGateway();
     
     /**
      * @param userDTO
@@ -36,12 +38,10 @@ public class UserServ {
         );
 
         StateManagement.usuarios.put(newUser.getEmail(), newUser); 
-        StateManagement.usuarioExpediente.put(newUser, new ArrayList<>());       
+        StateManagement.usuarioExpediente.put(newUser, new ArrayList<>());
         
-        System.out.println("SIMULACIÓN: Creando y 'guardando' usuario...");
-        System.out.println(" - Email: " + newUser.getEmail());
-        System.out.println(" - Usuarios 'en BBDD' ahora: " + StateManagement.usuarios.size());
-        
+        bdGateway.saveUser(userDTO);
+
         // Por seguridad, nunca devolvemos la contraseña al cliente.
         userDTO.setContrasena(null); 
         
@@ -95,6 +95,7 @@ public class UserServ {
         
         User user = StateManagement.tokenUsuario.get(token); 
         StateManagement.usuarios.remove(user.getEmail());
+        bdGateway.deleteUser(user.getEmail());
 
         StateManagement.usuarioExpediente.remove(user);
         StateManagement.tokenUsuario.remove(token);
