@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 
 public class BDGateway {
@@ -80,6 +81,30 @@ public class BDGateway {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public Optional<ExpedDTO> saveExped(ExpedDTO expedDTO, String userEmail) {
+        try {
+            String expedDTOJson = mapper.writeValueAsString(expedDTO);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(java.net.URI.create(bdServiceURL).resolve("expeds/save/" + userEmail))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(expedDTOJson))
+                .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                ExpedDTO savedExped = mapper.readValue(response.body(), ExpedDTO.class);
+                return Optional.of(savedExped);
+            } else {
+                return Optional.empty();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
         }
     }
 }

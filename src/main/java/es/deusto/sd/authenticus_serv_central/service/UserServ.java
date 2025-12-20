@@ -6,7 +6,6 @@ import es.deusto.sd.authenticus_serv_central.dto.LoginRequestDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
 import es.deusto.sd.authenticus_serv_central.external.BDGateway;
-import es.deusto.sd.authenticus_serv_central.external.IServBDDAO;
 
 
 import java.util.ArrayList;
@@ -16,13 +15,6 @@ import java.util.UUID;
 public class UserServ {
 
     private final BDGateway bdGateway = new BDGateway();
-    private final IServBDDAO servBDDAO;
-
-    // Implementar el DAO de BBDD
-    public UserServ(IServBDDAO servBDDAO) {
-        this.servBDDAO = servBDDAO;
-    }
-
     
     /**
      * @param userDTO
@@ -111,27 +103,27 @@ public class UserServ {
 
      
 
-    public void removeUserAndAllData(String token) throws Exception {
-        if (!StateManagement.isActiveToken(token)) {
-            throw new IllegalArgumentException("Token no válido o sesión ya cerrada.");
-        }
+    // public void removeUserAndAllData(String token) throws Exception {
+    //     if (!StateManagement.isActiveToken(token)) {
+    //         throw new IllegalArgumentException("Token no válido o sesión ya cerrada.");
+    //     }
 
-        User user = StateManagement.tokenUsuario.get(token);
-        if (user == null) {
-            throw new IllegalArgumentException("Sesión inválida.");
-        }
+    //     User user = StateManagement.tokenUsuario.get(token);
+    //     if (user == null) {
+    //         throw new IllegalArgumentException("Sesión inválida.");
+    //     }
 
-        String email = user.getEmail();
+    //     String email = user.getEmail();
 
-        servBDDAO.deleteUserAndCases(email);
+    //     servBDDAO.deleteUserAndCases(email);
 
-        StateManagement.tokenUsuario.entrySet()
-            .removeIf(e -> email.equalsIgnoreCase(e.getValue().getEmail()));
-
-        
-        StateManagement.usuarioExpediente.remove(user);
+    //     StateManagement.tokenUsuario.entrySet()
+    //         .removeIf(e -> email.equalsIgnoreCase(e.getValue().getEmail()));
 
         
-        StateManagement.usuarios.remove(email);
-    }
+    //     StateManagement.usuarioExpediente.remove(user);
+
+        
+    //     StateManagement.usuarios.remove(email);
+    // }
 }

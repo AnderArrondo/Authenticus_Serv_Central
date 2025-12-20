@@ -321,18 +321,5 @@ public class ExpController {
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }
-
-    @PostMapping("/save")
-    public ResponseEntity<?> saveExped(@RequestBody ExpedDTO expedDTO) {
-        
-        try{
-            ExpedDTO expediente = expedServ.saveExped(expedDTO);
-            return new ResponseEntity<>(expediente, HttpStatus.OK);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-    
+    }    
 }
