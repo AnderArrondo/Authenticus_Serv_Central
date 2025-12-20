@@ -105,10 +105,7 @@ public class UserCon {
     }   
 
     @Operation(summary = "Cierre de sesión (Logout)",
-               description = "Invalida un token de sesión activo para cerrar la sesión del usuario. La sesión ha de estar iniciada.",
-               parameters = {
-                    @Parameter(name = "token", description = "Token de sesión del usuario. Debe estar activo.")
-               })
+               description = "Invalida un token de sesión activo para cerrar la sesión del usuario. La sesión ha de estar iniciada.")
     @ApiResponse(responseCode = "200", description = "Logout exitoso. Devuelve un mensaje de confirmación.",
         content = @Content(
             mediaType = "text/plain",
@@ -128,7 +125,10 @@ public class UserCon {
         ))
     
     @PutMapping("/logout/{token}")
-    public ResponseEntity<?> logout(@PathVariable String token) { 
+    public ResponseEntity<?> logout(
+        @Parameter(name = "token", description = "Token de sesión del usuario. Debe estar activo.")
+        @PathVariable String token
+    ) { 
         try {
             userServ.logout(token);
             return ResponseEntity.ok().body("Logout exitoso.");
@@ -140,10 +140,7 @@ public class UserCon {
     @DeleteMapping("/remove/{token}")
 
     @Operation(summary = "Eliminar un usuario existente.", 
-                description = "Elimina el usuario asociado al token de sesión proporcionado. Debe tener la sesión iniciada.",
-                parameters = {
-                    @Parameter(name="token", description = "Token de sesión del usuario. Debe estar activo.")
-                })
+                description = "Elimina el usuario asociado al token de sesión proporcionado. Debe tener la sesión iniciada.")
 
     @ApiResponse(responseCode = "200", 
                 description = "Usuario eliminado correctamente. Devuelve un mensaje de confirmación.",
@@ -163,8 +160,11 @@ public class UserCon {
                         example = "Token no válido o sesión ya cerrada."
                     )
                 ))
-    public ResponseEntity<?> remove(@PathVariable String token) { 
-        String extractedToken = token; 
+    public ResponseEntity<?> remove(
+        @Parameter(name="token", description = "Token de sesión del usuario. Debe estar activo.")
+        @PathVariable("token") String token
+    ) { 
+        String extractedToken = token;
        
         try { 
             userServ.removeUser(extractedToken); 

@@ -92,7 +92,6 @@ public class UserServ {
         if (!StateManagement.isActiveToken(token)) { 
             throw new IllegalArgumentException("Token no válido o sesión ya cerrada."); 
         }
-        
         User user = StateManagement.tokenUsuario.get(token); 
         StateManagement.usuarios.remove(user.getEmail());
         bdGateway.deleteUser(user.getEmail());
