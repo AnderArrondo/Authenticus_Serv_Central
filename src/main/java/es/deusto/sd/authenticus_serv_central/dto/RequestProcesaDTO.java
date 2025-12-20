@@ -9,6 +9,9 @@ public class RequestProcesaDTO implements Serializable {
     private ArchImagenDTO archImagenDTO;
     private String TipoExp;
 
+    public RequestProcesaDTO() {
+    }
+
     public RequestProcesaDTO(ArchImagenDTO archImagenDTO, String tipoExp) {
         this.archImagenDTO = archImagenDTO;
         this.TipoExp = tipoExp;

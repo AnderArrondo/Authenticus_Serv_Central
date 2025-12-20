@@ -13,7 +13,7 @@ import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 import es.deusto.sd.authenticus_serv_central.entity.User;
-import es.deusto.sd.authenticus_serv_central.gateways.BDGateway;
+import es.deusto.sd.authenticus_serv_central.external.BDGateway;
 
 public class StateManagement {
     // email -> user
@@ -26,19 +26,19 @@ public class StateManagement {
     BDGateway bdGateway = new BDGateway();
 
     static {
-        Optional<List<UserDTO>> maybeUsers = new BDGateway().getAllUsers();
-        maybeUsers.ifPresent(userDTOs -> {
-            for (UserDTO userDTO : userDTOs) {
-                User user = new User(
-                    userDTO.getEmail(),
-                    userDTO.getContrasena(),
-                    userDTO.getNombre(),
-                    userDTO.getTelefono()
-                );
-                usuarios.put(user.getEmail(), user);
-                usuarioExpediente.put(user, new ArrayList<>()); // TODO cargar expedientes reales o iniciar vacio
-            }
-        });
+        // Optional<List<UserDTO>> maybeUsers = new BDGateway().getAllUsers();
+        // maybeUsers.ifPresent(userDTOs -> {
+        //     for (UserDTO userDTO : userDTOs) {
+        //         User user = new User(
+        //             userDTO.getEmail(),
+        //             userDTO.getContrasena(),
+        //             userDTO.getNombre(),
+        //             userDTO.getTelefono()
+        //         );
+        //         usuarios.put(user.getEmail(), user);
+        //         usuarioExpediente.put(user, new ArrayList<>()); // TODO cargar expedientes reales o iniciar vacio
+        //     }
+        // });
 
         // Imágenes de prueba
         ArchImagen img1 = new ArchImagen("C:/imagenes/escenario_crimen.jpg");

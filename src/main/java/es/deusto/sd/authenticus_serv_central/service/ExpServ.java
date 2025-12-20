@@ -17,8 +17,8 @@ import es.deusto.sd.authenticus_serv_central.entity.Exped;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 import es.deusto.sd.authenticus_serv_central.dto.ResultadoDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
-import es.deusto.sd.authenticus_serv_central.gateways.SocketProcesaClient;
 import es.deusto.sd.authenticus_serv_central.external.IServBDDAO;
+import es.deusto.sd.authenticus_serv_central.external.SocketProcesaClient;
 
 @Service
 public class ExpServ {
@@ -199,6 +199,8 @@ public class ExpServ {
             ArchImagenDTO resultDTO = clientSocket.enviarRequestProcesa(img, tipoCaso);
             imagenesResultado.add(resultDTO);
         }
+
+        clientSocket.closeConnection();
 
         return new ResultadoDTO(caso.getNombre(), caso.getTipo(), caso.getFecha(), imagenesResultado);
     }

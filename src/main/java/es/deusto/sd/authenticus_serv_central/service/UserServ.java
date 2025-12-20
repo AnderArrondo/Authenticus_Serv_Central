@@ -5,7 +5,7 @@ import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginRequestDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
-import es.deusto.sd.authenticus_serv_central.gateways.BDGateway;
+import es.deusto.sd.authenticus_serv_central.external.BDGateway;
 import es.deusto.sd.authenticus_serv_central.external.IServBDDAO;
 
 
