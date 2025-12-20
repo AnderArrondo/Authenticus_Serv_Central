@@ -52,11 +52,12 @@ public class SocketProcesaClient {
 
         try {
             out.writeObject(requestDTO);
+			out.flush();
 
-            ArchImagenDTO resultDTO = mapper.readValue((InputStream)in, ArchImagenDTO.class);
-            return resultDTO;
-        } catch (IOException e) {
-            System.err.println("# SocketProcesaClient - enviarRequestProcesa IO error: " + e.getMessage());
+			ArchImagenDTO resultDTO = (ArchImagenDTO) in.readObject();
+			return resultDTO;
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("# SocketProcesaClient - enviarRequestProcesa IO/ClassNotFound error: " + e.getMessage());
         }
         return null;
     }
