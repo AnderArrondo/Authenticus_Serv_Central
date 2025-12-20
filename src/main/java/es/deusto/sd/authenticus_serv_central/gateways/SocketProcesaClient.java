@@ -1,9 +1,9 @@
 package es.deusto.sd.authenticus_serv_central.gateways;
 
-import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -22,9 +22,8 @@ public class SocketProcesaClient {
 	private int serverPort;
 	Socket socket;
 
-	DataInputStream in;
+	ObjectInputStream in;
 	ObjectOutputStream out;
-    ObjectMapper mapper = new ObjectMapper();
     
 	public SocketProcesaClient(String servIP, int servPort) {
 		serverIP = servIP;
@@ -32,8 +31,8 @@ public class SocketProcesaClient {
 		try {
 			socket = new Socket(serverIP, serverPort);
 
-			in = new DataInputStream(socket.getInputStream());
-			out = new ObjectOutputStream((OutputStream)socket.getOutputStream());
+			in = new ObjectInputStream(socket.getInputStream());
+			out = new ObjectOutputStream(socket.getOutputStream());
 			System.out.println(" - TranslationClient: sever connection accepted.");
 		} catch (UnknownHostException e) {
 			System.err.println(" # Trans. SocketClient: Socket error: " + e.getMessage());
