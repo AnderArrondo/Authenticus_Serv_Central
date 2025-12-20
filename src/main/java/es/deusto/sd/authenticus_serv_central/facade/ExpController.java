@@ -40,9 +40,6 @@ public class ExpController {
     @Operation(
         summary="Crear un nuevo expediente.",
         description="Crea un nuevo expediente en el sistema con los datos proporcionados. La sesión debe estar activa.",
-        parameters = {
-            @Parameter(name="token", description = "Token de sesión del usuario. Debe estar activo.", required=true)
-        },
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Datos necesarios para crear un expediente en format de ExpedDTO.",
             required = true
@@ -65,7 +62,7 @@ public class ExpController {
     public ResponseEntity<?> crearExpediente(
         @Parameter(description = "Objeto Expediente a crear", required = true)
         @RequestBody ExpedDTO expedDTO,
-        @PathVariable String token) {
+        @PathVariable("token") String token) {
         try {
             ExpedDTO newExped = expedServ.crearExpediente(expedDTO, token);
             return new ResponseEntity<ExpedDTO>(newExped, HttpStatus.CREATED);
@@ -79,13 +76,7 @@ public class ExpController {
         description = "Si no se proporciona ninguno de los primeros parametros de personalización muestra los últimos 5 casos del usuario. " +
             "Es posible modificar este número cambiando el parametro de <i>numCasos</i>." +
             "También es posible obtener los casos de investigación entre dos fechas dadas en orden cronológico proporcionando <i>fechaIni</i> y <i>fechaFin</i>. " +
-            "En todo caso la sesión debe estar activa.",
-        parameters = {
-            @Parameter(name="token", description = "Token de sesión del usuario. Debe estar activo."),
-            @Parameter(name = "numCasos", description = "Número de casos que se quieren consultar, por defecto 5.", required = false),
-            @Parameter(name = "fechaIni", description = "Fecha inicio por la que se quiere filtrar casos, en formato <i>dd/MM/yyyy</i>. Si se proporciona, <i>fechaFin</i> es también requerido.", required = false),
-            @Parameter(name = "fechaFin", description = "Fecha fin por la que se quiere filtrar casos, en formato <i>dd/MM/yyyy</i>. Si se proporciona, <i>fechaIni</i> es también requerido.", required = false)
-        }
+            "En todo caso la sesión debe estar activa."
     )
     @ApiResponse(responseCode = "200", description = "Expediente(s) encontrado(s) correctamente. Devuelve una lista de ExpedDTO",
         content = @Content(
@@ -119,10 +110,33 @@ public class ExpController {
             )))
     @GetMapping("/consultar/{token}")
     public ResponseEntity<?> consultarExpediente(
-        @RequestParam(required = false) Optional<Integer> numCasos,
-        @RequestParam(required = false) Optional<String> fechaIni,
-        @RequestParam(required = false) Optional<String> fechaFin,
-        @PathVariable String token) {
+            @Parameter(
+        description = "Número de casos que se quieren consultar, por defecto 5.",
+        required = false
+    )
+    @RequestParam(name = "numCasos", required = false)
+    Optional<Integer> numCasos,
+
+    @Parameter(
+        description = "Fecha inicio (dd/MM/yyyy). Requiere fechaFin.",
+        required = false
+    )
+    @RequestParam(name = "fechaIni", required = false)
+    Optional<String> fechaIni,
+
+    @Parameter(
+        description = "Fecha fin (dd/MM/yyyy). Requiere fechaIni.",
+        required = false
+    )
+    @RequestParam(name = "fechaFin", required = false)
+    Optional<String> fechaFin,
+
+    @Parameter(
+        description = "Token de sesión del usuario. Debe estar activo.",
+        required = true
+    )
+    @PathVariable("token")
+    String token) {
 
         try{
             List<ExpedDTO> listaExp = expedServ.consultaExped(numCasos, fechaIni, fechaFin, token);
@@ -138,10 +152,6 @@ public class ExpController {
     @Operation(
         summary = "Añadir archivos a un caso existente.",
         description = "Añade archivos adicionales al caso de investigación correspondiente. El caso debe existir previamente. La sesión ha de estar activa.",
-        parameters = {
-            @Parameter(name = "nombre", description = "Nombre identificativo del caso (mayúsculas y minúsculas indistintamente).", required = true),
-            @Parameter(name = "token", description = "Token del usuario. Debe estar activo.", required = true)
-        },
         requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Lista de archivos a añadir. Los archivos esperados son rutas absolutas (<i>Unidad:/ruta</i>), por lo tanto deben contener al menos un caracter '/'.", required = true,
             content = @Content(
@@ -176,9 +186,26 @@ public class ExpController {
     ))
     @PutMapping("/ainadir/{token}")
     public ResponseEntity<?> ainadirArchivosExpediente(
-        @RequestParam(required = true) String nombre, 
-        @PathVariable(required = true) String token,
-        @RequestBody(required = true) List<String> archivos) {
+        
+    @Parameter(
+        description = "Nombre identificativo del caso (mayúsculas y minúsculas indistintamente).",
+        required = true
+    )
+    @RequestParam(name = "nombre", required = true)
+    String nombre,
+
+    @Parameter(
+        description = "Token de sesión del usuario. Debe estar activo.",
+        required = true
+    )
+    @PathVariable("token")
+    String token,
+
+    @Parameter(
+        description = "Lista de rutas absolutas de archivos a añadir."
+    )
+    @RequestBody
+    List<String> archivos) {
         
         try{
             expedServ.ainadirArchivosAdicionales(nombre, token, archivos);
@@ -194,11 +221,7 @@ public class ExpController {
 
     @Operation(
         summary = "Eliminar un caso de investigación existente.",
-        description = "Elimina un caso de investigación mediante el nombre del caso correspondiente. El caso debe de existir previamente y la sesión ha de estar activa.",
-        parameters = {
-            @Parameter(name = "token", description = "Token de sesión del usuario. Debe estar activa."),
-            @Parameter(name = "nombreCaso", description = "Nombre identificativo del caso que se desea borrar (mayúsculas y minúsculas indistintamente).")
-        }
+        description = "Elimina un caso de investigación mediante el nombre del caso correspondiente. El caso debe de existir previamente y la sesión ha de estar activa."
     )
     @ApiResponse(responseCode = "200",
     description = "Caso eliminado correctamente. Devuelve un mensaje de confirmación.",
@@ -227,19 +250,30 @@ public class ExpController {
     ))
     @DeleteMapping("eliminar/{token}")
     public ResponseEntity<?> eliminarCaso(
-            @PathVariable String token,
-            @RequestParam String nombreCaso) {
+        @Parameter(
+            description = "Token de sesión del usuario. Debe estar activo.",
+            required = true
+        )
+        @PathVariable("token")
+        String token,
 
-                try {
-                    boolean result = expedServ.eliminarCaso(token, nombreCaso);
-                    if(result) {
-                        return new ResponseEntity<>("Caso eliminado correctamente.", HttpStatus.OK);
-                    } else {
-                        return new ResponseEntity<>("Caso no encontrado", HttpStatus.NOT_FOUND);
-                    }
-                } catch (Exception e) {
-                    return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-                }
+        @Parameter(
+            description = "Nombre identificativo del caso que se desea borrar (mayúsculas y minúsculas indistintamente).",
+            required = true
+        )
+        @RequestParam(name = "nombreCaso", required = true)
+        String nombreCaso) {
+
+        try {
+            boolean result = expedServ.eliminarCaso(token, nombreCaso);
+            if(result) {
+                return new ResponseEntity<>("Caso eliminado correctamente.", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Caso no encontrado", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Operation(
@@ -247,11 +281,7 @@ public class ExpController {
         description = "Procesa los resultados de un caso dado (a partir del nombre)" +
         "teniendo en cuenta el tipo de procesamiento seleccionado. " +
         "A cada imagen del caso le corresponde un número entre [0, 1], si el tipo de procesamiento ha sido seleccionado. " +
-        "En caso contrario, el resultado es -1. La sesión debe estar activa y el caso debe de existir previamente.",
-        parameters = {
-            @Parameter(name="token", description = "Token de sesión del usuario. Debe estar activa.", required = true),
-            @Parameter(name="nombreCaso", description = "Nombre identificativo del caso del que se desea obtener resultados (mayúsculas y minúsculas indistintamente).", required = true)
-        })
+        "En caso contrario, el resultado es -1. La sesión debe estar activa y el caso debe de existir previamente.")
     @ApiResponse(responseCode = "200",
     description = "Resultados del caso procesados correctamente. Devuelve un ResultadoDTO del expediente seleccionado.",
     content = @Content(
@@ -271,8 +301,19 @@ public class ExpController {
         ))
     @GetMapping("resultados/{token}")
     public ResponseEntity<?> resultados(
-            @PathVariable String token,
-            @RequestParam String nombreCaso) {
+                @Parameter(
+        description = "Token de sesión del usuario. Debe estar activo.",
+        required = true
+    )
+    @PathVariable("token")
+    String token,
+
+    @Parameter(
+        description = "Nombre identificativo del caso (mayúsculas y minúsculas indistintamente).",
+        required = true
+    )
+    @RequestParam(name = "nombreCaso", required = true)
+    String nombreCaso) {
     
         try {
             ResultadoDTO resultados = expedServ.resultadosDeCaso(token, nombreCaso);
