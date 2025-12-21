@@ -1,12 +1,11 @@
 package es.deusto.sd.authenticus_serv_central.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
@@ -16,64 +15,78 @@ import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 import es.deusto.sd.authenticus_serv_central.entity.User;
 import es.deusto.sd.authenticus_serv_central.external.BDGateway;
 
-public class StateManagement {
-    // email -> user
+public class StateManagement { 
+    
     public static Map<String, User> usuarios = new HashMap<>();
-    // token -> user
     public static Map<String, User> tokenUsuario = new HashMap<>();
-    // user -> listaExp
     public static Map<User, List<Exped>> usuarioExpediente = new HashMap<>();
 
-
-    static {
-        // TODO: leer datos de BD
-        // Optional<List<UserDTO>> maybeUsers = bdGateway.getAllUsers();
-        // maybeUsers.ifPresent(userDTOs -> {
-        //     for (UserDTO userDTO : userDTOs) {
-        //         User user = new User(
-        //             userDTO.getEmail(),
-        //             userDTO.getContrasena(),
-        //             userDTO.getNombre(),
-        //             userDTO.getTelefono()
-        //         );
-        //         usuarios.put(user.getEmail(), user);
-        //         usuarioExpediente.put(user, new ArrayList<>());
-        //         // TODO cargar expedientes reales o iniciar vacio
-        //     }
-        // });
-
-        // Imágenes de prueba
-        ArchImagen img1 = new ArchImagen("C:/imagenes/escenario_crimen.jpg");
-        ArchImagen img2 = new ArchImagen("C:/imagenes/prueba1.png");
-        ArchImagen img3 = new ArchImagen("C:/imagenes/pistas.jpg");
-
-        // Crear varios expedientes y rellenar el mapa local 'expedientes'
-        Calendar calendar = Calendar.getInstance();
-        Date date;
-
-        calendar.set(2024, Calendar.JANUARY, 15);
-        date = calendar.getTime();
-        Exped exped1 = new Exped("Caso Styles", TipoExp.AMBAS, date, List.of(img1, img2));
-
-        calendar.set(2020, Calendar.JUNE, 30);
-        date = calendar.getTime();
-        Exped exped2 = new Exped("Caso Benedicto", TipoExp.VERACIDAD, date, List.of(img1));
-
-        calendar.set(2017, Calendar.DECEMBER, 2);
-        date = calendar.getTime();
-        Exped exped3 = new Exped("Caso Pamela", TipoExp.INTEGRIDAD, date, List.of(img2, img3));
-
-        User user1 = new User("user1@gmail.com", "password123", "User One", "123456789");
-        User user2 = new User("user2@gmail.com", "password456", "User Two", "987654321");
-
-        StateManagement.usuarioExpediente.put(user1, new ArrayList<>(List.of(exped1, exped2)));
-        StateManagement.usuarioExpediente.put(user2, new ArrayList<>(List.of(exped3)));
-
-        StateManagement.tokenUsuario.put("token_user1", user1);
-        StateManagement.tokenUsuario.put("token_user2", user2);
-    }
+    private static final SimpleDateFormat dtFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
     public static boolean isActiveToken(String token) {
         return tokenUsuario.containsKey(token);
     }
-}
+
+    public static void cargarDatosDeBD(BDGateway bdGateway) {
+        System.out.println("--- INICIANDO CARGA DE DATOS DESDE EL SERVIDOR BD (Puerto 8082) ---");
+        
+        try {
+            // 1. Obtener todos los usuarios
+            List<UserDTO> usersDTO = bdGateway.getAllUsers().orElse(Collections.emptyList());
+            
+            for (UserDTO uDTO : usersDTO) {
+                // Crear Usuario local
+                User user = new User(
+                    uDTO.getEmail(),
+                    uDTO.getContrasena(), 
+                    uDTO.getNombre(),
+                    uDTO.getTelefono()
+                );
+
+                usuarios.put(user.getEmail(), user);
+                
+                List<Exped> listaExpeds = new ArrayList<>();
+
+                // 2. Obtener expedientes
+                List<ExpedDTO> expedsDTO = bdGateway.getExpedientesByEmail(user.getEmail())
+                                                    .orElse(Collections.emptyList());
+
+                for (ExpedDTO eDTO : expedsDTO) {
+                    try {
+                        List<ArchImagen> imgs = new ArrayList<>();
+                        if (eDTO.getImagenes() != null) {
+                            for (String path : eDTO.getImagenes()) {
+                                imgs.add(new ArchImagen(path));
+                            }
+                        }
+
+                        TipoExp tipoEnum;
+                        try {
+                            tipoEnum = TipoExp.valueOf(eDTO.getTipo().toUpperCase());
+                        } catch (Exception ex) {
+                            tipoEnum = TipoExp.AMBAS; 
+                        }
+
+                        Exped exped = new Exped(
+                            eDTO.getNombre(),
+                            tipoEnum,
+                            dtFormatter.parse(eDTO.getFecha()), 
+                            imgs
+                        );
+                        listaExpeds.add(exped);
+                    } catch (Exception ex) {
+                        System.err.println("Error al parsear expediente: " + ex.getMessage());
+                    }
+                }
+
+                usuarioExpediente.put(user, listaExpeds);
+                System.out.println("Cargado usuario: " + user.getEmail() + " con " + listaExpeds.size() + " expedientes.");
+            }
+        } catch (Exception e) {
+            System.err.println("ERROR FATAL cargando datos de BD: " + e.getMessage());
+        }
+        
+        System.out.println("--- CARGA FINALIZADA ---");
+    }
+
+} 

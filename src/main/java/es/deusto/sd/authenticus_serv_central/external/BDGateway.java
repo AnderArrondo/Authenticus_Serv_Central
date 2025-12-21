@@ -157,6 +157,30 @@ public class BDGateway {
             return false;
         }
     }
+        
+    
+    public Optional<List<ExpedDTO>> getExpedientesByEmail(String email) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(java.net.URI.create(bdServiceURL).resolve("exped/list/" + email))
+                .header("Accept", "application/json")
+                .GET()
+                .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                List<ExpedDTO> expedientes = mapper.readValue(response.body(), 
+                    mapper.getTypeFactory().constructCollectionType(List.class, ExpedDTO.class));
+                return Optional.of(expedientes);
+            } else {
+                return Optional.empty();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
 }
 
 
