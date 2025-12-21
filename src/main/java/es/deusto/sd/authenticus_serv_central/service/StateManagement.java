@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
@@ -23,9 +24,9 @@ public class StateManagement {
     // user -> listaExp
     public static Map<User, List<Exped>> usuarioExpediente = new HashMap<>();
 
-    BDGateway bdGateway = new BDGateway();
 
     static {
+        BDGateway bdGateway = new BDGateway();
         Optional<List<UserDTO>> maybeUsers = new BDGateway().getAllUsers();
         maybeUsers.ifPresent(userDTOs -> {
             for (UserDTO userDTO : userDTOs) {
@@ -36,8 +37,17 @@ public class StateManagement {
                     userDTO.getTelefono()
                 );
                 usuarios.put(user.getEmail(), user);
-                usuarioExpediente.put(user, new ArrayList<>()); // TODO cargar expedientes reales o iniciar vacio
+
+                List<ExpedDTO> expedDTOs =
+                bdGateway.listarExpedientes(user.getEmail());
+
+            List<Exped> expedientes = new ArrayList<>();
+            for (ExpedDTO dto : expedDTOs) {
+                expedientes.add(BDGateway.convertirExpedDTO(dto));
             }
+
+            usuarioExpediente.put(user, expedientes);
+        }
         });
 
         // Imágenes de prueba
