@@ -1,11 +1,12 @@
 package es.deusto.sd.authenticus_serv_central.dto;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 
-public class ArchImagenDTO {
+public class ArchImagenDTO implements Serializable {
     @Schema(name="nombre", example="prueba1.jpg", requiredMode = RequiredMode.REQUIRED)
     private String nombre;
     @Schema(name="path", example="C:/caso_styles/pruebas", requiredMode = RequiredMode.REQUIRED)
@@ -15,6 +16,10 @@ public class ArchImagenDTO {
     @Schema(name = "pIntegridad", example="0.89", requiredMode = RequiredMode.NOT_REQUIRED)
     private double pIntegridad;
 
+    public ArchImagenDTO() {
+
+    }
+    
     public ArchImagenDTO(String nombre, String path) {
         this.nombre = nombre;
         this.path = path;

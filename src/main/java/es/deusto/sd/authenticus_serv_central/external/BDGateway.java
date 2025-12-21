@@ -1,4 +1,4 @@
-package es.deusto.sd.authenticus_serv_central.gateways;
+package es.deusto.sd.authenticus_serv_central.external;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -20,6 +22,7 @@ import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 
+@Service
 public class BDGateway {
     private final String bdServiceURL = "http://localhost:8082/";
     private final HttpClient httpClient;
@@ -93,52 +96,45 @@ public class BDGateway {
         }
     }
 
-    public List<ExpedDTO> listarExpedientes(String email) {
+    public Optional<ExpedDTO> saveExped(ExpedDTO expedDTO, String userEmail) {
         try {
+            String expedDTOJson = mapper.writeValueAsString(expedDTO);
+
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(java.net.URI.create(bdServiceURL).resolve("exped/list/" + email))
-                .GET()
+                .uri(java.net.URI.create(bdServiceURL).resolve("exped/create/" + userEmail))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(expedDTOJson))
                 .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-
-                ObjectMapper mapper = new ObjectMapper();
-                return mapper.readValue(response.body(), new TypeReference<List<ExpedDTO>>() {}
-                );
-            }
-            else{
-                throw new RuntimeException("Error HTTP: " + response.statusCode());
+                ExpedDTO savedExped = mapper.readValue(response.body(), ExpedDTO.class);
+                return Optional.of(savedExped);
+            } else {
+                return Optional.empty();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return Collections.emptyList();
+            return Optional.empty();
         }
     }
 
-    public static Exped convertirExpedDTO(ExpedDTO dto) {
-
-        TipoExp tipo = TipoExp.valueOf(dto.getTipo().toUpperCase());
-
-        Date fecha;
+    public boolean deleteExped(String nombreCaso, String userEmail) {
         try {
-            fecha = new SimpleDateFormat("dd/MM/yyyy").parse(dto.getFecha());
-        } catch (ParseException e) {
-            throw new RuntimeException("Formato de fecha incorrecto", e);
-        }
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(java.net.URI.create(bdServiceURL).resolve("exped/delete/" + userEmail + 
+                    "?nombreCaso=" + java.net.URLEncoder.encode(nombreCaso, "UTF-8")))
+                .DELETE()
+                .build();
 
-        List<ArchImagen> imagenes = new ArrayList<>();
-        for (String ruta : dto.getImagenes()) {
-            imagenes.add(new ArchImagen(ruta));
-        }
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        return new Exped(
-            dto.getNombre(),
-            tipo,
-            fecha,
-            imagenes
-        );
+            return response.statusCode() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
 

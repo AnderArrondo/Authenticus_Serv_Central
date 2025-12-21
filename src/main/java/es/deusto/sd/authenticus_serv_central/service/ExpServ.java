@@ -17,19 +17,19 @@ import es.deusto.sd.authenticus_serv_central.entity.Exped;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 import es.deusto.sd.authenticus_serv_central.dto.ResultadoDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
-import es.deusto.sd.authenticus_serv_central.gateways.SocketProcesaClient;
-import es.deusto.sd.authenticus_serv_central.external.IServBDDAO;
+import es.deusto.sd.authenticus_serv_central.external.BDGateway;
+import es.deusto.sd.authenticus_serv_central.external.SocketProcesaClient;
 
 @Service
 public class ExpServ {
     private SimpleDateFormat dtFormatter = new SimpleDateFormat("dd/MM/yyyy");
-    private final IServBDDAO expedGateway;
+    private final BDGateway bdGateway;
     /*/
     public ExpServ() {
     }
     /*/
-    public ExpServ(IServBDDAO expedGateway) {
-        this.expedGateway = expedGateway;
+        public ExpServ(BDGateway bdGateway) {
+        this.bdGateway = bdGateway;
     }
 
     public ExpedDTO crearExpediente(ExpedDTO expedDTO, String token) throws IllegalArgumentException, ParseException {
@@ -55,8 +55,12 @@ public class ExpServ {
         }
 
         StateManagement.usuarioExpediente.get(usuario).add(exped);
+        Optional<ExpedDTO> result = bdGateway.saveExped(expedDTO, usuario.getEmail());
 
-        return toDTO(exped);
+        if(result.isPresent()) {
+            return result.get();
+        }
+        return null;
     }
 
     private boolean existeExpediente(Exped newExped, User usuario){
@@ -174,6 +178,7 @@ public class ExpServ {
         }
         User usuario = StateManagement.tokenUsuario.get(token);
         List<Exped> listaExpedientes = StateManagement.usuarioExpediente.get(usuario);
+        bdGateway.deleteExped(nombreCaso, usuario.getEmail());
         return listaExpedientes.removeIf(exped -> exped.getNombre().toUpperCase().equals(nombreCaso.toUpperCase()));
     }
     
@@ -200,6 +205,8 @@ public class ExpServ {
             imagenesResultado.add(resultDTO);
         }
 
+        clientSocket.closeConnection();
+
         return new ResultadoDTO(caso.getNombre(), caso.getTipo(), caso.getFecha(), imagenesResultado);
     }
 
@@ -219,15 +226,4 @@ public class ExpServ {
             throw new Exception("No ha iniciado sesión");
         }
     }
-
-    public ExpedDTO saveExped(ExpedDTO expedDTO) throws Exception{
-        Optional<ExpedDTO> expediente = expedGateway.saveExped(expedDTO);
-        if(expediente.isPresent()){
-            return expediente.get();
-        }
-        else{
-            throw new Exception("No se ha podido guardar el expediente.");
-        }
-    }
-
 }
