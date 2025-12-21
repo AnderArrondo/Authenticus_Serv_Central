@@ -203,11 +203,17 @@ public class ExpServ {
         for(ArchImagen img : listaImagenes) {
             ArchImagenDTO resultDTO = clientSocket.enviarRequestProcesa(img, tipoCaso);
             imagenesResultado.add(resultDTO);
+
+            ArchImagen imgResult = new ArchImagen(resultDTO.getPath(), resultDTO.getNombre());
+            imgResult.setpVeracidad(resultDTO.getpVeracidad());
+            imgResult.setpIntegridad(resultDTO.getpIntegridad());
         }
 
         clientSocket.closeConnection();
 
-        return new ResultadoDTO(caso.getNombre(), caso.getTipo(), caso.getFecha(), imagenesResultado);
+        ResultadoDTO resultDTO = new ResultadoDTO(caso.getNombre(), caso.getTipo(), caso.getFecha(), imagenesResultado);
+        bdGateway.updateArchImagenResultado(nombreCaso, resultDTO, usuario.getEmail());
+        return resultDTO;
     }
 
     public void ainadirArchivosAdicionales(String nombreCaso, String token, List<String> archivos)throws Exception{

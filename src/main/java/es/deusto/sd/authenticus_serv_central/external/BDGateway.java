@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
+import es.deusto.sd.authenticus_serv_central.dto.ResultadoDTO;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
@@ -126,6 +127,26 @@ public class BDGateway {
                 .uri(java.net.URI.create(bdServiceURL).resolve("exped/delete/" + userEmail + 
                     "?nombreCaso=" + java.net.URLEncoder.encode(nombreCaso, "UTF-8")))
                 .DELETE()
+                .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return response.statusCode() == 200;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateArchImagenResultado(String nombreCaso, ResultadoDTO resultadoDTO, String userEmail) {
+        try {
+            String archImagenJson = mapper.writeValueAsString(resultadoDTO);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(java.net.URI.create(bdServiceURL).resolve("exped/update-image-result/" + userEmail + 
+                    "?nombreCaso=" + java.net.URLEncoder.encode(nombreCaso, "UTF-8")))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(archImagenJson))
                 .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
