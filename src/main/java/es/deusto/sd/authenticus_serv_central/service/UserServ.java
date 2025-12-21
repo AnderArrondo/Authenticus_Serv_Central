@@ -69,14 +69,13 @@ public class UserServ {
         if (StateManagement.isActiveToken(token)) {
             try {
                 User user = StateManagement.tokenUsuario.remove(token);
+                System.out.println("SIMULACIÓN: Logout exitoso.");
+                System.out.println(" - Usuario deslogeado: " + user.getEmail());
+                System.out.println(" - Token invalidado: " + token);
+                System.out.println(" - Tokens activos ahora: " + StateManagement.tokenUsuario.size());
             } catch (Exception e) {
                 throw e;
             }
-
-            // System.out.println("SIMULACIÓN: Logout exitoso.");
-            // System.out.println(" - Usuario deslogeado: " + user.getEmail());
-            // System.out.println(" - Token invalidado: " + token);
-            // System.out.println(" - Tokens activos ahora: " + StateManagement.tokenUsuario.size());
         } else {
             throw new IllegalArgumentException("Token no válido o sesión ya cerrada.");
         }

@@ -185,7 +185,7 @@ public class ExpController {
         )
     ))
     @PutMapping("/ainadir/{token}")
-    public ResponseEntity<?> ainadirArchivosExpediente(
+    public ResponseEntity<String> ainadirArchivosExpediente(
         
     @Parameter(
         description = "Nombre identificativo del caso (mayúsculas y minúsculas indistintamente).",
@@ -209,11 +209,11 @@ public class ExpController {
         
         try{
             expedServ.ainadirArchivosAdicionales(nombre, token, archivos);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>("Imagenes añadidas correctamente", HttpStatus.OK);
         }
         catch(Exception e){
 
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

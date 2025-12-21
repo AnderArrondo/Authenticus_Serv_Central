@@ -225,6 +225,7 @@ public class ExpServ {
                 if(e.getNombre().toUpperCase().equals(nombreCaso.toUpperCase())){
 
                     e.add(toArchImagenList(archivos));
+                    bdGateway.ainadirArchivos(user.getEmail(), nombreCaso, archivos);
                 }
             }
         }

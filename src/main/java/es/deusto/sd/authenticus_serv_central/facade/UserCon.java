@@ -127,7 +127,7 @@ public class UserCon {
     @PutMapping("/logout/{token}")
     public ResponseEntity<?> logout(
         @Parameter(name = "token", description = "Token de sesión del usuario. Debe estar activo.")
-        @PathVariable String token
+        @PathVariable("token") String token
     ) { 
         try {
             userServ.logout(token);

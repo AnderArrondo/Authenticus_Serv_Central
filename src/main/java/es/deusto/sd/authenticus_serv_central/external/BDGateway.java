@@ -1,8 +1,11 @@
 package es.deusto.sd.authenticus_serv_central.external;
 
+import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -161,8 +164,9 @@ public class BDGateway {
     
     public Optional<List<ExpedDTO>> getExpedientesByEmail(String email) {
         try {
+            String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8);
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(java.net.URI.create(bdServiceURL).resolve("exped/list/" + email))
+                .uri(java.net.URI.create(bdServiceURL).resolve("exped/list/" + encodedEmail))
                 .header("Accept", "application/json")
                 .GET()
                 .build();
@@ -179,6 +183,38 @@ public class BDGateway {
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();
+        }
+    }
+
+    public boolean ainadirArchivos(String email, String nombreCaso, List<String> nuevasImgs) {
+        try {
+            String requestBody = mapper.writeValueAsString(nuevasImgs);
+
+            String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8);
+            String encodedNombreCaso = URLEncoder.encode(nombreCaso, StandardCharsets.UTF_8);
+
+            String urlFinal = bdServiceURL + "exped/add-files/" + encodedEmail + "?nombreCaso=" + encodedNombreCaso;
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(urlFinal))
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                System.out.println("Archivos añadidos correctamente en BD.");
+                return true;
+            } else {
+                System.err.println("Error al añadir archivos. Status: " + response.statusCode() + " - " + response.body());
+                return false;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }
