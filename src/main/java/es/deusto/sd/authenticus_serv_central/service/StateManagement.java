@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.Exped;
@@ -23,7 +24,6 @@ public class StateManagement {
     // user -> listaExp
     public static Map<User, List<Exped>> usuarioExpediente = new HashMap<>();
 
-    BDGateway bdGateway = new BDGateway();
 
     static {
         // TODO: leer datos de BD
