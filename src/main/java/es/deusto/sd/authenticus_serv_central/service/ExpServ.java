@@ -55,9 +55,12 @@ public class ExpServ {
         }
 
         StateManagement.usuarioExpediente.get(usuario).add(exped);
-        bdGateway.saveExped(expedDTO, token);
+        Optional<ExpedDTO> result = bdGateway.saveExped(expedDTO, usuario.getEmail());
 
-        return toDTO(exped);
+        if(result.isPresent()) {
+            return result.get();
+        }
+        return null;
     }
 
     private boolean existeExpediente(Exped newExped, User usuario){

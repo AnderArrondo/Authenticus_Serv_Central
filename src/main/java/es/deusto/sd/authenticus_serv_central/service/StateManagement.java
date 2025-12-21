@@ -27,7 +27,7 @@ public class StateManagement {
 
     static {
         // TODO: leer datos de BD
-        // Optional<List<UserDTO>> maybeUsers = new BDGateway().getAllUsers();
+        // Optional<List<UserDTO>> maybeUsers = bdGateway.getAllUsers();
         // maybeUsers.ifPresent(userDTOs -> {
         //     for (UserDTO userDTO : userDTOs) {
         //         User user = new User(
@@ -37,7 +37,8 @@ public class StateManagement {
         //             userDTO.getTelefono()
         //         );
         //         usuarios.put(user.getEmail(), user);
-        //         usuarioExpediente.put(user, new ArrayList<>()); // TODO cargar expedientes reales o iniciar vacio
+        //         usuarioExpediente.put(user, new ArrayList<>());
+        //         // TODO cargar expedientes reales o iniciar vacio
         //     }
         // });
 

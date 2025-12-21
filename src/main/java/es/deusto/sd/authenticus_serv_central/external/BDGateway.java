@@ -114,7 +114,8 @@ public class BDGateway {
     public boolean deleteExped(String nombreCaso, String userEmail) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                .uri(java.net.URI.create(bdServiceURL).resolve("exped/delete/" + userEmail + "/" + nombreCaso))
+                .uri(java.net.URI.create(bdServiceURL).resolve("exped/delete/" + userEmail + 
+                    "?nombreCaso=" + java.net.URLEncoder.encode(nombreCaso, "UTF-8")))
                 .DELETE()
                 .build();
 
