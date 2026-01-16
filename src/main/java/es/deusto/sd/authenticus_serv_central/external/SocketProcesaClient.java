@@ -26,9 +26,9 @@ public class SocketProcesaClient {
     private BufferedReader in;
     private BufferedWriter out;
     
-	public SocketProcesaClient(String servIP, int servPort) {
-		serverIP = servIP;
-		serverPort = servPort;
+	public SocketProcesaClient() {
+		serverIP = "localhost";
+		serverPort = 8081;
 		try {
 			socket = new Socket(serverIP, serverPort);
 
