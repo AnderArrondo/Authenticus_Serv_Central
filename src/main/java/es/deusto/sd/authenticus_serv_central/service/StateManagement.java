@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import es.deusto.sd.authenticus_serv_central.dto.ExpedDTO;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
@@ -25,6 +26,17 @@ public class StateManagement {
 
     public static boolean isActiveToken(String token) {
         return tokenUsuario.containsKey(token);
+    }
+
+        public static Optional<String> getActiveTokenForUser(String email) {
+        return tokenUsuario.entrySet().stream()
+            .filter(entry -> entry.getValue().getEmail().equals(email))
+            .map(Map.Entry::getKey)
+            .findFirst();
+    }
+
+    public static boolean isUserLoggedIn(String email) {
+        return getActiveTokenForUser(email).isPresent();
     }
 
     public static void cargarDatosDeBD(BDGateway bdGateway) {

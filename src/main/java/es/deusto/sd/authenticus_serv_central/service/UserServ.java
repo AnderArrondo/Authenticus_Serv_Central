@@ -56,9 +56,16 @@ public class UserServ {
         if (user == null || !user.getContrasena().equals(loginDTO.getContrasena())) {
             throw new IllegalArgumentException("Email o contraseña incorrectos."); 
         }
+        if(StateManagement.isUserLoggedIn(loginDTO.getEmail())) {
+            throw new IllegalArgumentException("El usuario ya tiene una sesión activa.");
+        }
         String token = UUID.randomUUID().toString();
         StateManagement.tokenUsuario.put(token, user); 
-        return new LoginResponseDTO(token); } 
+        LoginResponseDTO response = new LoginResponseDTO();
+        response.setToken(token);
+        response.setUsername(user.getEmail());
+        return response;
+    } 
 
 
     /**
