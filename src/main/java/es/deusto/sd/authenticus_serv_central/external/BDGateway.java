@@ -18,7 +18,7 @@ import es.deusto.sd.authenticus_serv_central.dto.ResultadoDTO;
 import es.deusto.sd.authenticus_serv_central.dto.UserDTO;
 
 @Service
-public class BDGateway {
+public class BDGateway implements IBDGateway {
     private final String bdServiceURL = "http://localhost:8082/";
     private final HttpClient httpClient;
     private final ObjectMapper mapper;
@@ -28,6 +28,7 @@ public class BDGateway {
         this.mapper = new ObjectMapper();
     }
 
+    @Override
     public Optional<UserDTO> saveUser(UserDTO userDTO) {
         try {
             String userDTOJson = mapper.writeValueAsString(userDTO);
@@ -52,6 +53,7 @@ public class BDGateway {
         }
     }
 
+    @Override
     public Optional<List<UserDTO>> getAllUsers() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -75,6 +77,7 @@ public class BDGateway {
         }
     }
 
+    @Override
     public boolean deleteUser(String email) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -91,6 +94,7 @@ public class BDGateway {
         }
     }
 
+    @Override
     public Optional<ExpedDTO> saveExped(ExpedDTO expedDTO, String userEmail) {
         try {
             String expedDTOJson = mapper.writeValueAsString(expedDTO);
@@ -115,6 +119,7 @@ public class BDGateway {
         }
     }
 
+    @Override
     public boolean deleteExped(String nombreCaso, String userEmail) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -132,6 +137,7 @@ public class BDGateway {
         }
     }
 
+    @Override
     public boolean updateArchImagenResultado(String nombreCaso, ResultadoDTO resultadoDTO, String userEmail) {
         try {
             String archImagenJson = mapper.writeValueAsString(resultadoDTO);
@@ -152,7 +158,7 @@ public class BDGateway {
         }
     }
         
-    
+    @Override
     public Optional<List<ExpedDTO>> getExpedientesByEmail(String email) {
         try {
             String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8);
@@ -177,6 +183,7 @@ public class BDGateway {
         }
     }
 
+    @Override
     public boolean ainadirArchivos(String email, String nombreCaso, List<String> nuevasImgs) {
         try {
             String requestBody = mapper.writeValueAsString(nuevasImgs);

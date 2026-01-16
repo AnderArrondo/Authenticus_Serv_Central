@@ -17,7 +17,7 @@ import es.deusto.sd.authenticus_serv_central.entity.ArchImagen;
 import es.deusto.sd.authenticus_serv_central.entity.RequestProcesa;
 import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 
-public class SocketProcesaClient {
+public class SocketProcesaClient implements ISocketProcesaClient {
     private String serverIP;
 	private int serverPort;
 	private Socket socket;
@@ -44,6 +44,7 @@ public class SocketProcesaClient {
 		}
 	}
 
+	@Override
     public ArchImagenDTO enviarRequestProcesa(ArchImagen img, TipoExp tipoExp) {
         RequestProcesa request = new RequestProcesa(img, tipoExp);
         RequestProcesaDTO requestDTO = new RequestProcesaDTO(
@@ -69,6 +70,7 @@ public class SocketProcesaClient {
         return null;
     }
 
+	@Override
 	public void closeConnection() {
 		try {
 			if (socket != null) {
