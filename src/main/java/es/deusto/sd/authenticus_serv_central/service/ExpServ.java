@@ -198,7 +198,7 @@ public class ExpServ {
         List<ArchImagen> listaImagenes = caso.getImagenes();
         List<ArchImagenDTO> imagenesResultado = new ArrayList<>();
 
-        SocketProcesaClient clientSocket = new SocketProcesaClient() // CORRECION: info sobre ip y puerto en el constructor por defecto;
+        SocketProcesaClient clientSocket = new SocketProcesaClient(); // CORRECION: info sobre ip y puerto en el constructor por defecto
 
         for(ArchImagen img : listaImagenes) {
             ArchImagenDTO resultDTO = clientSocket.enviarRequestProcesa(img, tipoCaso);
