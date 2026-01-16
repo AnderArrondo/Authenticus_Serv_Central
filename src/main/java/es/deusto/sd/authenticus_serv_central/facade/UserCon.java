@@ -82,6 +82,7 @@ public class UserCon {
                         implementation = LoginResponseDTO.class,
                         example = "{\n" +
                             "\"token\": 123e4567-e89b-42d3-a456-556642440000" +
+                            ",\n\"username\": \"usuario123\"\n" +
                             "}"
                     )
                 ))
