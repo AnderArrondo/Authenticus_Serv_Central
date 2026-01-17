@@ -1,8 +1,7 @@
 package es.deusto.sd.authenticus_serv_central.entity;
 
 import java.util.Objects;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 
 
 public class ArchImagen {
