@@ -6,7 +6,7 @@ import es.deusto.sd.authenticus_serv_central.dto.LoginRequestDTO;
 import es.deusto.sd.authenticus_serv_central.dto.LoginResponseDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
 import es.deusto.sd.authenticus_serv_central.external.BDGateway;
-
+import es.deusto.sd.authenticus_serv_central.external.IBDGateway;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Service
 public class UserServ {
 
-    private final BDGateway bdGateway = new BDGateway();
+    private final IBDGateway bdGateway = new BDGateway();
     
     /**
      * @param userDTO

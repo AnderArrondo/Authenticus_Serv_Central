@@ -18,12 +18,13 @@ import es.deusto.sd.authenticus_serv_central.entity.TipoExp;
 import es.deusto.sd.authenticus_serv_central.dto.ResultadoDTO;
 import es.deusto.sd.authenticus_serv_central.entity.User;
 import es.deusto.sd.authenticus_serv_central.external.BDGateway;
+import es.deusto.sd.authenticus_serv_central.external.IBDGateway;
 import es.deusto.sd.authenticus_serv_central.external.SocketProcesaClient;
 
 @Service
 public class ExpServ {
     private SimpleDateFormat dtFormatter = new SimpleDateFormat("dd/MM/yyyy");
-    private final BDGateway bdGateway;
+    private final IBDGateway bdGateway;
     /*/
     public ExpServ() {
     }
