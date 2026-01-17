@@ -1,6 +1,8 @@
 package es.deusto.sd.authenticus_serv_central.entity;
 
 import java.util.Objects;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 public class ArchImagen {
@@ -17,9 +19,14 @@ public class ArchImagen {
     }
 
     public ArchImagen(String absPath) {
-        String[] parts = absPath.split("/");
+        System.out.println("absPath = " +absPath);
+        String normalizedPath = absPath.trim().replace("\\", "/");
+        System.out.println("normalizedPath = " + normalizedPath);
+        String[] parts = normalizedPath.split("/");
         this.nombre = parts[parts.length - 1];
-        this.path = absPath.substring(0, absPath.lastIndexOf("/"));
+        this.path = normalizedPath.substring(0, normalizedPath.lastIndexOf("/"));
+        System.out.println("NOMBRE = " + this.nombre);
+        System.out.println("PATH   = " + this.path);
         this.pVeracidad = -1.0;
         this.pIntegridad = -1.0;
     }
