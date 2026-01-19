@@ -99,7 +99,7 @@ public class ExpServ {
         return new ExpedDTO(
             exped.getNombre(),
             exped.getTipo().toString(),
-            exped.getFecha().toString(),
+            dtFormatter.format(exped.getFecha()),
             exped.getImagenes().stream()
                 .map(ArchImagen::toString)
                 .toList()
